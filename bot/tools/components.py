@@ -1,59 +1,7 @@
 import discord
-from . import helpembeds as he
-from .embedbuilder import EmbedBuilder
-from database.ticket import TicketDB
-import string
-import ast
-import random
-from urllib.parse import quote_plus
 from ast import literal_eval
 
 from database.suggestions import SuggestDB
-
-class HelpBase:
-    
-    class Dropdown(discord.ui.Select):
-        def __init__(self, ctx, bot):
-            self.ctx = ctx
-            self.bot = bot
-
-            options = [
-                discord.SelectOption(label="Main Menu", value="Main Menu"),
-                discord.SelectOption(label="News", value="News"),
-                discord.SelectOption(label="Moderation", value="Moderation"),
-                discord.SelectOption(label="Miscellaneous", value="Miscellaneous"),
-                discord.SelectOption(label="Utility", value="Utility"),
-                discord.SelectOption(label="Music", value="Music"),
-                discord.SelectOption(label="Fun", value="Fun"),
-                discord.SelectOption(label="Economy", value="Economy"),
-                discord.SelectOption(label="Configuration", value="Configuration")
-            ]
-            super().__init__(placeholder="What command category would you like to view?", options=options)
-
-        async def callback(self, interaction: discord.Interaction):
-            if interaction.data["values"] == ["Main Menu"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).mainmenu())
-            if interaction.data["values"] == ["News"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).news())
-            if interaction.data["values"] == ["Moderation"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).moderation())
-            if interaction.data["values"] == ["Miscellaneous"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).miscellaneous())
-            if interaction.data["values"] == ["Utility"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).utility())
-            if interaction.data["values"] == ["Music"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).music())
-            if interaction.data["values"] == ["Fun"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).fun())
-            if interaction.data["values"] == ["Economy"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).economy())
-            if interaction.data["values"] == ["Configuration"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).configuration())
-        
-    class DropdownView(discord.ui.View):
-        def __init__(self, ctx, bot):
-            super().__init__()
-            self.add_item(HelpBase.Dropdown(ctx, bot))
             
 class TicketSetupPanelCat:
     
