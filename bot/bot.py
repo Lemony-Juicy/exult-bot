@@ -70,6 +70,7 @@ class Exult(commands.AutoShardedBot):
         
     arrow = "<a:arrow:882812954314154045>"
     red = 0xfb5f5f
+    invis = '\u200b'
     persistent_views_added = False
 
     async def on_ready(self):
