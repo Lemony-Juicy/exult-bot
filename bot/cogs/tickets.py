@@ -3,7 +3,7 @@ from discord.ext import commands
 from kimetsu import embed
 
 from database import ticket
-from tools import embedbuilder, components
+from tools import components
 
 import asyncio
 
