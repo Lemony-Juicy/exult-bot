@@ -2,22 +2,21 @@
 
 ## Instructions to PR to Web Dashboard
 
-Requirements for Contributors
-*****************************
+### Requirements for Contributors
 
-- Make sure you have the latest version of `nodejs <https://nodejs.org/en/download/>`_, up to date
+- Make sure you have the latest version of [nodejs](https://nodejs.org/en/download), up to date
 
-#. Your code is commented, at the very least minimalistically.
-#. Your code is fully functioning and not incomplete.
-#. Your PR explains **EVERYTHING** you have changed, and what said change is.
-#. You **MUST** only upload when you have built with your changes succesfully.
+1. Your code is commented, at the very least minimalistically.
+2. Your code is fully functioning and not incomplete.
+3. Your PR explains **EVERYTHING** you have changed, and what said change is.
+4. You **MUST** only upload when you have built with your changes succesfully.
 
-How to run on your localhost
-*****************************
+### How to run on your localhost
+
 - Make sure you have cloned the directory!
 
 ```bash
-#  make sure to change directory into dashboard
+#  make sure to change into dashboard directory
 $ cd dashboard
 
 # install all dependencies
