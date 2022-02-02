@@ -4,8 +4,12 @@
 @tailwind components;
 @tailwind utilities;
 
+.overflow-none-x {
+    overflow-x: hidden;
+}
+
 .bg-backing {
-    background-image: url('~/static/ExultPageBG.svg');
+    background-image: url('~/static/imgs/ExultPageBG.svg');
 }
 
 .font-main {
@@ -94,5 +98,41 @@
 
 .w-106 {
     width: 32rem;
+}
+
+.mx-50 {
+    margin-left: 12.1rem;
+    margin-right: 12.1rem;
+}
+
+/* Fade in's/outs */
+
+.fade-in {
+    opacity: 0;
+    transition: opacity 350ms ease-in;
+}
+
+.fade-in.appear {
+    opacity: 1;
+}
+
+.from-left {
+    transform: translateX(-50%);
+}
+
+.from-right {
+    transform: translateX(50%);
+}
+
+.from-left,
+.from-right {
+    transition: opacity 350ms ease-in, transform 500ms ease-in;
+    opacity: 0;
+}
+
+.from-left.appear,
+.from-right.appear {
+    transform: translateX(0);
+    opacity: 1;
 }
 

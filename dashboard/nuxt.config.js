@@ -13,6 +13,10 @@ export default {
     ],
     link: [
     ],
+    script: [
+      // Global JS Scripts
+      {src: '../js/main.js', defer:true},
+    ]
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css

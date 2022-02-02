@@ -1,5 +1,5 @@
 <template>
-<div class="font-main">
+<div class="font-main overflow-none-x ">
   <NavBar/>
   <Landing/>
 </div>
