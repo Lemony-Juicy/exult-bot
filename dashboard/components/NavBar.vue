@@ -1,6 +1,6 @@
 <template>
   <div class="bg-blue-accent">
-    <div class="mx-20">
+    <div class="mx-50">
       <div class="flex justify-between">
         <div class="flex">
           <div>
@@ -11,7 +11,7 @@
             <p class="font-bold text-sm">Discord Bot</p>
           </div>
         </div>
-        <div class="mt-3 flex">
+        <div class="mt-3 flex mr-10">
           <div class="dropdown inline-block relative">
             <div class="text-white font-semibold mt-1 py-2 px-4 rounded inline-flex items-center">
               <span class="mr-1">Exult</span>
