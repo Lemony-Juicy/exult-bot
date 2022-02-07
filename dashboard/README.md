@@ -1,27 +1,40 @@
-# testing
+# Offical Exult Bot Web Dashboard
 
-## Build Setup
+## Instructions to PR to Web Dashboard
+
+### Requirements for Contributors
+
+- Make sure you have the latest version of [nodejs](https://nodejs.org/en/download), up to date
+- Make sure you are somewhat familiar with Nuxt.js or Vue
+
+1. Your code is commented, at the very least minimalistically.
+2. Your code is fully functioning and not incomplete.
+3. Your PR explains **EVERYTHING** you have changed, and what said change is.
+4. You **MUST** only upload when you have built with your changes succesfully.
+
+### How to run on your localhost
+
+- Make sure you have cloned the directory!
 
 ```bash
-# install dependencies
+#  make sure to change into dashboard directory
+$ cd .\dashboard\
+
+# install all dependencies
 $ npm install
 
 # serve with hot reload at localhost:3000
 $ npm run dev
 
-# build for production and launch server
+# build for production
 $ npm run build
-$ npm run start
-
-# generate static project
-$ npm run generate
 ```
 
 For detailed explanation on how things work, check out the [documentation](https://nuxtjs.org).
 
 ## Special Directories
 
-You can create the following extra directories, some of which have special behaviors. Only `pages` is required; you can delete them if you don't want to use their functionality.
+You can create the following extra directories, some of which have special behaviors. **NOT ALL OF THE FOLLWOING DIRECTORIES WILL BE IN THE WEBSITE**
 
 ### `assets`
 

@@ -24,3 +24,13 @@ faders.forEach(fader => {
 sliders.forEach(slider => {
     appearOnScroll.observe(slider)
 })
+
+// navbar responsiveness
+
+const hamburgermenu = document.getElementById("hamburger-toggle-nav")
+const navBar = document.getElementById("navbar-links")
+
+hamburgermenu.addEventListener('click', () => {
+    navBar.classList.toggle('hidden')
+    console.log()
+})

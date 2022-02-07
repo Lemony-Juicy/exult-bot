@@ -105,6 +105,18 @@
     margin-right: 12.1rem;
 }
 
+.max-w-8xl {
+    max-width: 90rem;
+}
+
+.min-w-6 {
+    min-width: 6rem;
+}
+
+.hamburger-menu {
+    display: block;
+}
+
 /* Fade in's/outs */
 
 .fade-in {

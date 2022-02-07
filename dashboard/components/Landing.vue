@@ -8,15 +8,15 @@
                 <button class="text-white bg-primary-blue px-4 py-2 mt-5 rounded-lg font-semibold ">Add to Discord</button>
                 <button class="ml-4 primary-blue border border-primary-blue px-6 py-2 mt-5 rounded-lg font-semibold">Bot Features</button>
             </div>
-            <div class="mr-40 fade-in">
+            <div class="mr-52 fade-in">
                 <img src="~/static/imgs/logo.png" class="w-106 relative bottom-36" alt="EXULT Logo">
                 <p class="text-gray-200 text-center text-lg relative bottom-44">Bringing joy through <br> the world's digital playground</p>
             </div>
         </div>
     </div>
     <div class="w-full h-20 mb-12 bg-blue-accent flex justify-between text-white opacity-85">
-        <h1 class="text-xl pt-6 font-semibold pl-52">Currently in <a class="red-accent">84</a> servers, serving <a class="red-accent">10,204</a> people</h1>
-        <button class=" bg-primary-blue h-10 px-9 rounded-lg mt-4 mr-80">Learn More</button>
+        <h1 class="text-xl pt-6 font-semibold pl-52">Currently in <a class="red-accent">91</a> servers, serving <a class="red-accent">65595</a> people</h1>
+        <button class=" bg-primary-blue h-10 px-9 rounded-lg mt-4 mr-96">Learn More</button>
     </div>
     <div class="flex justify-between pt-4">
         <div class="text-white ml-52 mt-20 from-left slide-in">
@@ -24,22 +24,22 @@
             <p class="mt-3 text-gray-400">The Exult Discord Bot does it all for you. <br> Sit back, relax and enjoy!</p>
         </div>
         <div class="from-right slide-in">
-            <img class=" mr-52" src="~/static/imgs/DiscordBG.svg" alt="Discord Mockup Background">
+            <img class=" mr-72" src="~/static/imgs/DiscordBG.svg" alt="Discord Mockup Background">
         </div>
     </div>
     <div class="flex justify-between pt-4">
         <div class=" ml-36 from-left slide-in">
             <img class="-mt-20" src="~/static/imgs/DashboardGFX.svg" alt="Dashboard Coming Soon Background">
         </div>
-        <div class="text-white mr-80 mt-32 from-right slide-in">
+        <div class="text-white mr-96 mt-32 from-right slide-in">
             <h1 class="text-3xl font-bold">You're in control...</h1>
             <p class="mt-3 text-gray-400">A fully-customisable bot, <br> with a user-friendly dashboard!</p>
         </div>
     </div>
-    <div class="mt-10">
-        <h1 class="flex justify-center text-white text-4xl font-bold">Help & Resources</h1>
-        <div class="flex justify-center mt-20 fade-in">
-            <div class="text-white h-96 w-80 rounded-2xl flex justify-center border border-gold-accent bg-blue-accent">
+    <h1 class="flex justify-center text-white text-4xl font-bold">Help & Resources</h1>
+    <div class="mt-10 flex justify-center">
+        <div class="flex flex-col md:flex-row mt-10 fade-in">
+            <div class="text-white h-96 w-80 md:ml-0 mb-14 md:mb-0 rounded-2xl flex justify-center border border-gold-accent bg-blue-accent">
                 <div class="mt-7">
                     <p class="text-center text-2xl font-bold">List of features</p>
                     <p class="mt-2 p-3 text-center">The Exult Discord Bot has a wide variety of many different features.
@@ -49,7 +49,7 @@
                     <button class="bg-primary-blue p-3 px-5 rounded-xl ml-24 mt-3">See full list</button>
                 </div>
             </div>
-            <div class="text-white h-96 w-80 ml-20 rounded-2xl flex justify-center border border-gold-accent bg-blue-accent">
+            <div class="text-white h-96 w-80 md:ml-20 rounded-2xl flex justify-center border border-gold-accent bg-blue-accent">
                 <div class="mt-7">
                     <p class="text-center text-2xl font-bold">Setup</p>
                     <p class="text-center mt-3">It's quick and easy...</p>
