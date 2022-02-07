@@ -5,6 +5,7 @@
 ### Requirements for Contributors
 
 - Make sure you have the latest version of [nodejs](https://nodejs.org/en/download), up to date
+- Make sure you are somewhat familiar with Nuxt.js or Vue
 
 1. Your code is commented, at the very least minimalistically.
 2. Your code is fully functioning and not incomplete.
@@ -17,7 +18,7 @@
 
 ```bash
 #  make sure to change into dashboard directory
-$ cd dashboard
+$ cd .\dashboard\
 
 # install all dependencies
 $ npm install
