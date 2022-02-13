@@ -1,22 +1,22 @@
 <template>
 <div class="bg-backing bg-main h-full">
     <div class="bg-main w-full h-landing bg-backing">
-        <div class="relative h-l-half ml-52 flex justify-between">
-            <div class="fade-in">
+        <div class="relative h-l-half  ml-0 md:ml-52 flex justify-center md:justify-between">
+            <div class="fade-in text-left">
                 <h1 class="font-bold text-white text-4xl">The Exult Discord Bot</h1>
                 <p class="text-gray-400 font-semibold mt-5">An all-in-one bot to fit all your needs. <br> Moderation, Fun, Utility and More!</p>
                 <button class="text-white bg-primary-blue px-4 py-2 mt-5 rounded-lg font-semibold ">Add to Discord</button>
                 <button class="ml-4 primary-blue border border-primary-blue px-6 py-2 mt-5 rounded-lg font-semibold">Bot Features</button>
             </div>
-            <div class="mr-52 fade-in">
+            <div class=" mr-52 fade-in hidden md:block">
                 <img src="~/static/imgs/logo.png" class="w-106 relative bottom-36" alt="EXULT Logo">
                 <p class="text-gray-200 text-center text-lg relative bottom-44">Bringing joy through <br> the world's digital playground</p>
             </div>
         </div>
     </div>
-    <div class="w-full h-20 mb-12 bg-blue-accent flex justify-between text-white opacity-85">
-        <h1 class="text-xl pt-6 font-semibold pl-52">Currently in <a class="red-accent">91</a> servers, serving <a class="red-accent">65595</a> people</h1>
-        <button class=" bg-primary-blue h-10 px-9 rounded-lg mt-4 mr-96">Learn More</button>
+    <div class="w-full h-20 mb-12 bg-blue-accent flex md:justify-between text-white opacity-85 justify-center">
+        <h1 class="text-xl pt-6 font-semibold md:pl-52">Currently in <a class="red-accent">91</a> servers, serving <a class="red-accent">65595</a> people</h1>
+        <button class=" bg-primary-blue h-10 px-9 rounded-lg mt-4 hidden md:block md:mr-96">Learn More</button>
     </div>
     <div class="flex justify-between pt-4">
         <div class="text-white ml-52 mt-20 from-left slide-in">
