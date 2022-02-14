@@ -1,5 +1,5 @@
 <template>
-<div class="bg-backing bg-main h-full">
+<div class="bg-backing bg-main h-full ">
     <div class="bg-main w-full h-landing bg-backing">
         <div class="relative h-l-half  ml-0 md:ml-52 flex justify-center md:justify-between">
             <div class="fade-in text-left">
@@ -16,9 +16,9 @@
     </div>
     <div class="w-full h-20 mb-12 bg-blue-accent flex md:justify-between text-white opacity-85 justify-center">
         <h1 class="text-xl pt-6 font-semibold md:pl-52">Currently in <a class="red-accent">91</a> servers, serving <a class="red-accent">65595</a> people</h1>
-        <button class=" bg-primary-blue h-10 px-9 rounded-lg mt-4 hidden md:block md:mr-96">Learn More</button>
+        <button class=" bg-primary-blue h-10 px-9 rounded-lg mt-4 hidden md:block md:mr-52 lg:mr-96">Learn More</button>
     </div>
-    <div class="flex justify-between pt-4">
+    <div class="flex md:justify-between flex-col md:flex-row pt-4">
         <div class="text-white ml-52 mt-20 from-left slide-in">
             <h1 class="text-3xl font-bold">It's time to revamp <br> your Discord server</h1>
             <p class="mt-3 text-gray-400">The Exult Discord Bot does it all for you. <br> Sit back, relax and enjoy!</p>
