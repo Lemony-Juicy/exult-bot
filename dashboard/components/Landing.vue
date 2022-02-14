@@ -81,7 +81,7 @@
                     <p class="text-center text-2xl font-bold">Setup</p>
                     <p class="text-center mt-3">It's quick and easy...</p>
                     <h1 class="mt-5  primary-blue">1. <a href="#">Add to Discord</a></h1>
-                    <h1 class=""><a class="primary-blue">2.</a> Type "v!help" for all commands </h1>
+                    <h1 class=""><a class="primary-blue">2.</a> Type "e!help" for all commands </h1>
                     <h1 class=""><a class="primary-blue">3.</a> Enjoy the bot! </h1>
                     <img class="mt-5" src="~/static/imgs/Cogs.svg" alt="Cogs and Squares">
                     <button class="bg-red-accent p-3 rounded-xl ml-12 mt-3">Guides Coming Soon...</button>

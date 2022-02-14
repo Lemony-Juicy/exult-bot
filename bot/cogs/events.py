@@ -9,10 +9,9 @@ import ast
 
 from database.ticket import TicketDB
 from kimetsu import embed
-from tools.customchecks import Check
 from database.automod import AutoModDB
 from database.prefix import PrefixDB
-from database.event import EventDB
+from database.events import EventDB
 import datetime
 
 from cogs.leveling import LevelingDbClient

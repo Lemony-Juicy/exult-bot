@@ -9,12 +9,12 @@ from easy_pil import Canvas, Editor, Font, Text
 import os
 
 
-EXP_PER_MESSAGE = 5
+EXP_PER_MESSAGE = 20
 
 # Exult's Formula by Ethan
-# reference: https://cdn.discordapp.com/attachments/882769875196600370/927628329174057050/unknown.png
+# reference: https://i.imgur.com/LA0JLty.png
 def exults_formula(lvl) -> int:
-    return round(0.9803061089598281*((lvl*2)**1.078))*100
+    return round((pi**-(e**(1/factorial(3)*gamma(pi))/10))*(log(e**(lvl*2)**1.078)*cosh(pi))*10/100)*100
 
 
 class LevelingDbClient:
@@ -142,6 +142,33 @@ class Leveling(commands.Cog):
 
             os.remove(f"assets/{member.name}_pfp.png")
 
+    @commands.group(slash_command=True, aliases=["lvls", "levels"])
+    @commands.cooldown(1, 5, commands.BucketType.user)
+    @commands.has_permissions(manage_guild=True)
+    async def levelling(self, ctx):
+        pass
+    
+    @levelling.command(slash_command=True, description="Turn on levelling for the server")
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.has_permissions(manage_guild=True)
+    async def on(self, ctx):
+        await self.db.set_levelling(ctx.guild.id, True)
+        await ctx.send(f"{ctx.author.mention} has turned on levelling for the server!")
+    
+    @levelling.command(slash_command=True, description="Turn off levelling for the server")
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.has_permissions(manage_guild=True)
+    async def off(self, ctx):
+        await self.db.set_levelling(ctx.guild.id, False)
+        await ctx.send(f"{ctx.author.mention} has turned off levelling for the server!")
+
+    @levelling.command(slash_command=True, description="Turn off levelling for the server")
+    @commands.cooldown(1, 60, commands.BucketType.user)
+    @commands.has_permissions(manage_guild=True)
+    async def toggle(self, ctx):
+        res = await self.db.set_levelling(ctx.guild.id, None)
+        await ctx.send(f"{ctx.author.mention} has turned {'on' if res else 'off'} levelling for the server!")
+
+
 def setup(bot):
     bot.add_cog(Leveling(bot))
-    

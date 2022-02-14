@@ -61,10 +61,10 @@ Exult Bot Feature Progression
      - Marry/divorce Commands
      - Ban Command
    * - Modmail Feature
-     - Warning Feature
+     - Emoji Commands
      - Counting Feature
    * - Modstats Command
-     - Emoji Commands
+     - 
      - Emotion Feature
    * - Nickname Command
      -
@@ -129,6 +129,9 @@ Exult Bot Feature Progression
    * - 
      -
      - Waifu Commands
+   * - 
+     -
+     - Warning Feature
    * - 
      -
      - Weather Command

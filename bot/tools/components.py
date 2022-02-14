@@ -1,59 +1,7 @@
 import discord
-from . import helpembeds as he
-from .embedbuilder import EmbedBuilder
-from database.ticket import TicketDB
-import string
-import ast
-import random
-from urllib.parse import quote_plus
 from ast import literal_eval
 
 from database.suggestions import SuggestDB
-
-class HelpBase:
-    
-    class Dropdown(discord.ui.Select):
-        def __init__(self, ctx, bot):
-            self.ctx = ctx
-            self.bot = bot
-
-            options = [
-                discord.SelectOption(label="Main Menu", value="Main Menu"),
-                discord.SelectOption(label="News", value="News"),
-                discord.SelectOption(label="Moderation", value="Moderation"),
-                discord.SelectOption(label="Miscellaneous", value="Miscellaneous"),
-                discord.SelectOption(label="Utility", value="Utility"),
-                discord.SelectOption(label="Music", value="Music"),
-                discord.SelectOption(label="Fun", value="Fun"),
-                discord.SelectOption(label="Economy", value="Economy"),
-                discord.SelectOption(label="Configuration", value="Configuration")
-            ]
-            super().__init__(placeholder="What command category would you like to view?", options=options)
-
-        async def callback(self, interaction: discord.Interaction):
-            if interaction.data["values"] == ["Main Menu"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).mainmenu())
-            if interaction.data["values"] == ["News"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).news())
-            if interaction.data["values"] == ["Moderation"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).moderation())
-            if interaction.data["values"] == ["Miscellaneous"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).miscellaneous())
-            if interaction.data["values"] == ["Utility"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).utility())
-            if interaction.data["values"] == ["Music"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).music())
-            if interaction.data["values"] == ["Fun"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).fun())
-            if interaction.data["values"] == ["Economy"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).economy())
-            if interaction.data["values"] == ["Configuration"]:
-                await interaction.message.edit(embed=he.HelpEmbeds(self.ctx, self.bot).configuration())
-        
-    class DropdownView(discord.ui.View):
-        def __init__(self, ctx, bot):
-            super().__init__()
-            self.add_item(HelpBase.Dropdown(ctx, bot))
             
 class TicketSetupPanelCat:
     
@@ -503,3 +451,43 @@ class SuggestVotes(discord.ui.View):
         embed.set_field_at(2, name="Total", value=total, inline=True)
         msg = await interaction.channel.fetch_message(interaction.message.id)
         await msg.edit(embed=embed, view=SuggestVotes(self.bot))
+
+class Paginator(discord.ui.View):
+    def __init__(self, ctx, pages, page=0, start_end=False, step_10=False):
+        super().__init__(timeout=120)
+        self.ctx = ctx
+        self.page = page
+        self.pages = pages
+        self.count = len(pages)
+        self.start_end = start_end
+        self.step_10 = step_10
+        self.add_buttons()
+
+    def add_buttons(self):
+        non_page_buttons = [item for item in self.children if not isinstance(item, PaginatorButton)]
+        if self.children:
+            self.clear_items()
+        if not self.count or self.count == 1:
+            return
+        previous_page = self.page - 1
+        if previous_page < 0:
+            previous_page = self.count - 1
+        self.add_item(PaginatorButton(label="◀", page=previous_page, style=discord.ButtonStyle.red))
+        self.add_item(PaginatorButton(label=f"{self.page + 1} / {len(self.pages)}", style=discord.ButtonStyle.grey, disabled=True))
+        next_page = self.page + 1
+        if next_page > self.count - 1:
+            next_page = 0
+        self.add_item(PaginatorButton(label="▶", page=next_page, style=discord.ButtonStyle.green))
+        for item in non_page_buttons:
+            self.add_item(item)
+
+class PaginatorButton(discord.ui.Button["Paginator"]):
+    def __init__(self, label, style, row=0, page=None, disabled=False):
+        super().__init__(style=style, label=label, row=row, disabled=disabled)
+        self.page = page
+
+    async def callback(self, interaction: discord.Interaction):
+        self.pages = self.view.pages
+        self.view.page = self.page
+        self.view.add_buttons()
+        await interaction.message.edit(embed=self.pages[self.page], view=self.view)
