@@ -1,6 +1,6 @@
 <template>
 <div class="font-main overflow-none-x ">
-    Please wait...
+    Logging in...
 </div>
 </template>
 
@@ -13,5 +13,13 @@ export default {
 //     }
 //     else this.$auth.redirect("/")  
 //   }
+    created: function() {
+        if (process.browser && this.$auth.loggedIn){
+            location.href = '/dashboard';
+        }
+        else if (process.browser && !this.$auth.loggedIn){
+            location.href = '/';
+        }
+    }
 }
 </script>

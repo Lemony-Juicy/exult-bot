@@ -49,15 +49,16 @@ export default {
       discord: {
         clientId: '889185777555210281',
         clientSecret: 'cq8B2a12yR3f1eExcdOe90Mk7izCDhCH',
-        responseType: 'code'
+        responseType: 'code',
+        scope: ['guilds','identify']
       },
     },
-    // redirect: {
-    //   login: '/login',
-    //   callback: '/login',
-    //   home: '/',
-    //   logout: '/'
-    // }
+    redirect: {
+      login: '/',
+      callback: '/login',
+      home: '/',
+      logout: '/'
+    }
   },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build

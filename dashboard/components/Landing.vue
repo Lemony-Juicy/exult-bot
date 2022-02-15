@@ -1,6 +1,5 @@
 <template>
 <div class="bg-backing bg-main h-full ">
-    <p id="sus">sus</p>
     <div class="bg-main w-full h-landing bg-backing">
         <div class="relative h-l-half  ml-0 lg:ml-52 flex justify-center lg:justify-between">
             <div class="fade-in text-left">
@@ -36,7 +35,7 @@
     </div>
     <div class="flex lg:justify-between text-center flex-col lg:flex-row pt-4">
 
-        <div class="w-full flex from-left slide-in ml-36 justify-center lg:block hidden">
+        <div class="w-full flex from-left slide-in ml-36 justify-center lg:block sm:hidden">
             <img class=" max-w-32" src="~/static/imgs/DashboardGFX.svg" alt="Discord Mockup Background">
         </div>
         <div class="text-white w-full lg:flex lg:flex-col lg:justify-start mt-20 from-right slide-in">
@@ -49,7 +48,7 @@
             <h1 class="text-3xl font-bold">It's time to revamp <br> your Discord server</h1>
             <p class="mt-3 text-gray-400">The Exult Discord Bot does it all for you. <br> Sit back, relax and enjoy!</p>
         </div> -->
-        <div class="from-right lg:hidden flex justify-center mb-20 mt-10 lg:mt-0 lg:mb-0 block slide-in">
+        <div class="from-right lg:hidden flex justify-center mb-20 mt-10 lg:mt-0 lg:mb-0 sm:block slide-in">
             <img class="max-w-32 lg:ml-36" src="~/static/imgs/DashboardGFX.svg" alt="Discord Mockup Background">
         </div>
     </div>

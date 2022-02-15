@@ -48,6 +48,11 @@
     color: #C6AF37
 }
 
+.active {
+    background-color: rgb(255, 255, 255, 0.2);
+    color: white;
+}
+
 .border-gold-accent {
     border-color: #C6AF37;
 }
@@ -61,7 +66,11 @@
 }
 
 .tracking-extra {
-    letter-spacing: .25em;
+    letter-spacing: .3em;
+}
+
+.p-px2 {
+    padding: 3px;
 }
 
 /* extra */
@@ -123,6 +132,10 @@
 
 .hamburger-menu {
     display: block;
+}
+
+.w-80-cent {
+    width: 85%;
 }
 
 /* Fade in's/outs */
