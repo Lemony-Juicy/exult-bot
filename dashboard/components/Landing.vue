@@ -6,8 +6,8 @@
                 <h1 class="font-bold text-white text-4xl">The Exult Discord Bot</h1>
                 <p class="text-gray-400 font-semibold mt-5">An all-in-one bot to fit all your needs. <br> Moderation, Fun, Utility and More!</p>
                 <div class="flex flex-col lg:flex-row">
-                    <button class="text-white bg-primary-blue px-4 py-2 mt-5 rounded-lg font-semibold ">Add to Discord</button>
-                    <button class="lg:ml-4 primary-blue border border-primary-blue px-6 py-2 mt-5 rounded-lg font-semibold">Bot Features</button>
+                    <button class="text-white bg-primary-blue px-4 py-2 mt-5 rounded-lg font-semibold hover:bg-transparent hover:primary-blue border-2 border-primary-blue">Add to Discord</button>
+                    <button class="lg:ml-4 primary-blue border-2 border-primary-blue px-6 py-2 mt-5 rounded-lg font-semibold hover:bg-primary-blue">Bot Features</button>
                 </div>
             </div>
             <div class=" mr-52 fade-in hidden lg:block">
@@ -18,7 +18,7 @@
     </div>
     <div class="w-full h-20 mb-12 bg-blue-accent flex md:justify-between text-white opacity-85 justify-center">
         <h1 class="text-xl pt-6 font-semibold md:pl-16 lg:pl-48 xl:pl-52">Currently in <a class="red-accent">81</a> servers, serving <a class="red-accent">65595</a> people</h1>
-        <button class=" bg-primary-blue h-10 px-9 rounded-lg mt-4 hidden md:block md:mr-20 lg:mr-52 xl:mr-96">Learn More</button>
+        <button class=" bg-primary-blue h-10 px-9 rounded-lg my-auto hidden md:block md:mr-20 lg:mr-52 xl:mr-96">Learn More</button>
     </div>
     <div class="flex lg:justify-between text-center flex-col lg:flex-row pt-4">
         <div class="text-white w-full lg:flex lg:flex-col lg:justify-start mt-20 from-left slide-in">
@@ -35,7 +35,7 @@
     </div>
     <div class="flex lg:justify-between text-center flex-col lg:flex-row pt-4">
 
-        <div class="w-full flex from-left slide-in ml-36 justify-center lg:block sm:hidden">
+        <div class="w-full flex from-left slide-in ml-36 justify-center lg:block hidden">
             <img class=" max-w-32" src="~/static/imgs/DashboardGFX.svg" alt="Discord Mockup Background">
         </div>
         <div class="text-white w-full lg:flex lg:flex-col lg:justify-start mt-20 from-right slide-in">
@@ -96,7 +96,7 @@
         <a href="#"><img class="mr-2" src="~/static/imgs/github.svg" alt="Instagram Logo"></a>
         <a href="#"><img class="mr-2" src="~/static/imgs/discord.svg" alt="Instagram Logo"></a>
     </div>
-        <p class="pt-1">Copyright © 2021 Exult Games</p>
+        <p class="pt-1">Copyright © 2022 Exult Games</p>
         <p>All Rights Reserved</p>
     </div>
 </div>
