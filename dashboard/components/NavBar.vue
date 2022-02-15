@@ -46,8 +46,11 @@
               <svg xmlns="http://www.w3.org/2000/svg" aria-hidden="true" role="img" width="20" height="20" class=" -translate-y-2 translate-x-11-5" preserveAspectRatio="xMidYMid meet" viewBox="0 0 24 24"><path d="M13 18v-8l3.5 3.5l1.42-1.42L12 6.16l-5.92 5.92L7.5 13.5L11 10v8h2M12 2a10 10 0 0 1 10 10a10 10 0 0 1-10 10A10 10 0 0 1 2 12A10 10 0 0 1 12 2z" fill="#c6af37"/></svg>
               <button class="ml-5 -mt-4 gold-accent border border-gold-accent h-8 w-28 rounded-lg"><p class="ml-4">Premium</p></button>
             </div>
-            <button class="bg-primary-blue text-white mt-4 mb-4 ml-10 w-24 md:ml-8 md:mt-2 rounded-lg h-8 font-semibold">Login</button>
+            <button v-if="!$auth.loggedIn" @click="login()" id="login" class="bg-primary-blue text-white mt-4 mb-4 ml-10 w-24 md:ml-8 md:mt-2 rounded-lg h-8 font-semibold">Login</button>
+            <!-- " this is u: {{ $auth.user.username }} # {{ $auth.user.discriminator }} " -->
+            <button v-else onclick="location.href='/dashboard/dashboard'" id="login" class="bg-primary-blue text-white mt-4 mb-4 ml-10 w-28 md:ml-8 md:mt-2 rounded-lg h-8 font-semibold">Dashboard</button>
           </div>
+          
         </div>
       </div>
     </div>
@@ -56,6 +59,11 @@
 
 <script>
 export default {
-  name: 'ExultNavBar'
+  name: 'ExultNavBar',
+  methods: {
+    login() {
+      this.$auth.loginWith('discord')
+    }
+  }
 }
 </script>

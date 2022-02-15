@@ -40,7 +40,31 @@ export default {
 
   // Modules: https://go.nuxtjs.dev/config-modules
   modules: [
+    '@nuxtjs/axios',
+    '@nuxtjs/auth-next',
+    '@nuxt/http'
   ],
+
+  http: {
+    
+  },
+
+  auth: {
+    strategies: {
+      discord: {
+        clientId: '889185777555210281',
+        clientSecret: 'cq8B2a12yR3f1eExcdOe90Mk7izCDhCH',
+        responseType: 'code',
+        scope: ['guilds','identify']
+      },
+    },
+    redirect: {
+      login: '/',
+      callback: '/login',
+      home: '/',
+      logout: '/'
+    }
+  },
 
   // Build Configuration: https://go.nuxtjs.dev/config-build
   build: {
