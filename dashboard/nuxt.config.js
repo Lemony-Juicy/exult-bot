@@ -42,7 +42,12 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
+    '@nuxt/http'
   ],
+
+  http: {
+    
+  },
 
   auth: {
     strategies: {
