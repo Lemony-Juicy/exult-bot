@@ -1,5 +1,6 @@
 <template>
 <div class="bg-backing bg-main h-full ">
+    <p id="sus">sus</p>
     <div class="bg-main w-full h-landing bg-backing">
         <div class="relative h-l-half  ml-0 lg:ml-52 flex justify-center lg:justify-between">
             <div class="fade-in text-left">
@@ -106,4 +107,5 @@
 export default {
   name: 'ExultLandingTop'
 }
+
 </script>
