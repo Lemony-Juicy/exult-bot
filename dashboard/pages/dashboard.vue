@@ -7,6 +7,9 @@
 <script>
 export default {
   name: 'DashboardPage',
-  middleware: 'auth'
+  middleware: 'auth',
+  head: {
+    title: 'Exult Bot · Dashboard',
+  }
 }
 </script>
