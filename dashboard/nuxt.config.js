@@ -1,3 +1,5 @@
+require('dotenv').config()
+
 export default {
   // Global page headers: https://go.nuxtjs.dev/config-head
   head: {
@@ -52,8 +54,8 @@ export default {
   auth: {
     strategies: {
       discord: {
-        clientId: '889185777555210281',
-        clientSecret: 'cq8B2a12yR3f1eExcdOe90Mk7izCDhCH',
+        clientId: process.env.CLIENTID,
+        clientSecret: process.env.CLIENTSECRET,
         responseType: 'code',
         scope: ['guilds','identify']
       },
