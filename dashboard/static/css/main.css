@@ -1,4 +1,16 @@
-@import url('https://fonts.googleapis.com/css?family=Work+Sans');
+/* work-sans-regular - latin */
+@font-face {
+    font-family: 'Work Sans';
+    font-style: normal;
+    font-weight: 400;
+    src: url('~/static/fonts/worksans/work-sans-v16-latin-regular.eot'); /* IE9 Compat Modes */
+    src: local(''),
+         url('~/static/fonts/worksans/work-sans-v16-latin-regular.eot?#iefix') format('embedded-opentype'), /* IE6-IE8 */
+         url('~/static/fonts/worksans/work-sans-v16-latin-regular.woff2') format('woff2'), /* Super Modern Browsers */
+         url('~/static/fonts/worksans/work-sans-v16-latin-regular.woff') format('woff'), /* Modern Browsers */
+         url('~/static/fonts/worksans/work-sans-v16-latin-regular.ttf') format('truetype'), /* Safari, Android, iOS */
+         url('~/static/fonts/worksans/work-sans-v16-latin-regular.svg#WorkSans') format('svg'); /* Legacy iOS */
+  }
 
 @tailwind base;
 @tailwind components;
@@ -63,6 +75,14 @@
 
 .red-accent {
     color: #fb5f5f;
+}
+
+.bg-med-gray {
+    background-color: #2E394D;
+}
+
+.bottom-3-5 {
+    bottom: 0.75rem;
 }
 
 .tracking-extra {
@@ -137,6 +157,15 @@
 .w-80-cent {
     width: 85%;
 }
+
+.h-43-vw {
+    height: 43vw;
+}
+
+.w-63 {
+    width: 15.5rem
+}
+
 
 /* Fade in's/outs */
 

@@ -6,8 +6,8 @@
                 <h1 class="font-bold text-white text-4xl">The Exult Discord Bot</h1>
                 <p class="text-gray-400 font-semibold mt-5">An all-in-one bot to fit all your needs. <br> Moderation, Fun, Utility and More!</p>
                 <div class="flex flex-col lg:flex-row">
-                    <button class="text-white bg-primary-blue px-4 py-2 mt-5 rounded-lg font-semibold hover:bg-transparent hover:primary-blue border-2 border-primary-blue">Add to Discord</button>
-                    <button class="lg:ml-4 primary-blue border-2 border-primary-blue px-6 py-2 mt-5 rounded-lg font-semibold hover:bg-primary-blue">Bot Features</button>
+                    <a href="https://bot.exult.games/invite"><button class="text-white bg-primary-blue px-4 py-2 mt-5 rounded-lg font-semibold  border-2 border-primary-blue">Add to Discord</button></a>
+                    <button class="lg:ml-4 primary-blue border-2 border-primary-blue bg-transparent px-6 py-2 mt-5 rounded-lg font-semibold ">Bot Features</button>
                 </div>
             </div>
             <div class=" mr-52 fade-in hidden lg:block">
@@ -80,7 +80,7 @@
                 <div class="mt-7">
                     <p class="text-center text-2xl font-bold">Setup</p>
                     <p class="text-center mt-3">It's quick and easy...</p>
-                    <h1 class="mt-5  primary-blue">1. <a href="#">Add to Discord</a></h1>
+                    <h1 class="mt-5  primary-blue">1. <a href="https://bot.exult.games/invite">Add to Discord</a></h1>
                     <h1 class=""><a class="primary-blue">2.</a> Type "e!help" for all commands </h1>
                     <h1 class=""><a class="primary-blue">3.</a> Enjoy the bot! </h1>
                     <img class="mt-5" src="~/static/imgs/Cogs.svg" alt="Cogs and Squares">
@@ -91,10 +91,10 @@
     </div>
     <div class="w-full mt-24 h-32 bg-blue-accent text-center text-white">
     <div class="flex justify-center pt-8">
-        <a href="#"><img class="mr-2" src="~/static/imgs/twitter.svg" alt="Twitter Logo"></a>
-        <a href="#"><img class="mr-2" src="~/static/imgs/instagram.svg" alt="Instagram Logo"></a>
-        <a href="#"><img class="mr-2" src="~/static/imgs/github.svg" alt="Instagram Logo"></a>
-        <a href="#"><img class="mr-2" src="~/static/imgs/discord.svg" alt="Instagram Logo"></a>
+        <a href="https://twitter.com/Andehlive"><img class="mr-2" src="~/static/imgs/twitter.svg" alt="Twitter Logo"></a>
+        <a href="https://www.instagram.com/exultgames/"><img class="mr-2" src="~/static/imgs/instagram.svg" alt="Instagram Logo"></a>
+        <a href="https://github.com/andeh-py/exult-bot"><img class="mr-2" src="~/static/imgs/github.svg" alt="Github Logo"></a>
+        <a href="https://discord.gg/2gY2tGSjXW"><img class="mr-2" src="~/static/imgs/discord.svg" alt="Discord Logo"></a>
     </div>
         <p class="pt-1">Copyright © 2022 Exult Games</p>
         <p>All Rights Reserved</p>
