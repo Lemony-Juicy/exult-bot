@@ -11,7 +11,13 @@ export default {
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
-      { name: 'format-detection', content: 'telephone=no' }
+      { name: 'format-detection', content: 'telephone=no' },
+      { content: "Exult Bot - Home", property: "og:title" },
+      { content: "1 Bot, heaps of top tier quality features! It can do it all. With easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions! Why have 10 different bots for each feature when you can have 1 that can do everything you need!", property: "og:description" },
+      { content: "https://bot.exult.games/", property: "og:url" },
+      { content: "https://bot.exult.games/imgs/logo.png", property:"og:image" },
+      { name: "theme-color", content: "#FF0000" },
+      // { name: "twitter:card", content: "summary_large_image" } this is to make img bigger
     ],
     link: [
     ],
