@@ -23,7 +23,7 @@ export default {
     ],
     script: [
       // Global JS Scripts
-      {src: 'https://bot.exult.games/js/main.js', defer:true},
+      {src: '/js/main.js', defer:true},
     ]
   },
 
