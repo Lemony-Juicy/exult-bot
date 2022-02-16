@@ -8,18 +8,35 @@ export default {
       lang: 'en'
     },
     meta: [
+      // Standard Stuff
       { charset: 'utf-8' },
       { name: 'viewport', content: 'width=device-width, initial-scale=1' },
       { hid: 'description', name: 'description', content: '' },
       { name: 'format-detection', content: 'telephone=no' },
+      // Import Meta Data
+      { name: "description", content: "1 Bot, heaps of top tier quality features! It can do it all. With easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions! Why have 10 different bots for each feature when you can have 1 that can do everything you need!"},
+      { name: "keywords", content: "discord,bot," },
+      { name: "author", content: "Exult Games"},
+      // Graph Meta Tags
       { content: "Exult Bot - Home", property: "og:title" },
-      { content: "1 Bot, heaps of top tier quality features! It can do it all. With easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions! Why have 10 different bots for each feature when you can have 1 that can do everything you need!", property: "og:description" },
+      { content: "Exult is bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!", property: "og:description" },
       { content: "https://bot.exult.games/", property: "og:url" },
-      { content: "https://bot.exult.games/imgs/logo.png", property:"og:image" },
-      { name: "theme-color", content: "#FF0000" },
-      // { name: "twitter:card", content: "summary_large_image" } this is to make img bigger
+      { content: "website", property: "og:type"},
+      { content: "https://cdn.discordapp.com/attachments/936387855046037524/943615429497221160/Fixed_1.png", property:"og:image" },
+      { content: "Exult Games logo", property: "og:image:alt"},
+      { name: "theme-color", content: "#1F2424" },
+      // Twitter Meta Tags
+      { name: "twitter:title", content: "Exult Bot - Home"},
+      { name: "twitter:description", content: "Exult is bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!"},
+      { name: "twitter:image", content: "https://cdn.discordapp.com/attachments/936387855046037524/943615429497221160/Fixed_1.png"},
+      { name: "twitter:image:alt", content: "Exult Games logo"},
+      { name: "twitter:site", content: "@Andehlive"},
+      { name: "twitter:creator", content: "@Andehlive" },
+      // { name: "twitter:card", content: "summary_large_image" } this is to make img bigger (longer)
     ],
     link: [
+      { rel:"shortcut icon", href: "https://bot.exult.games/imgs/favicon.ico" },
+      { rel: "apple-touch-icon", href: "https://bot.exult.games/imgs/logo.png" }
     ],
     script: [
       // Global JS Scripts
