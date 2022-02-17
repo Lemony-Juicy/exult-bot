@@ -20,8 +20,8 @@ export default {
   },
 
   methods: {
-    OnServerSelect() {
-
+    async OnServerSelect() {
+      require('dotenv').config()
       if (process.browser) {
 
       var servernameselect = document.getElementById("server-select").value
@@ -33,6 +33,20 @@ export default {
           let serverid = arrayservers[i].id
           let iconhash = arrayservers[i].icon
           let img = document.getElementById("servericon")
+
+          const guildinfo = await this.$http.$get(`http://localhost:3000/api/v1/guilds/19389129321`, {
+            debug: true,
+            retry: 1.1,
+          })
+
+          console.log(guildinfo)
+
+          // const guildChannelinfo = await this.$http.$get(`https://discord.com/api/guilds/${serverid}/channels`, {
+          //   debug: true,
+          //   retry: 1.1,
+          // })
+
+          // console.log(guildChannelinfo)
 
           if (iconhash == null) {
             img.src = `https://www.freepnglogos.com/uploads/discord-logo-png/discord-logo-logodownload-download-logotipos-1.png`
@@ -48,6 +62,7 @@ export default {
     }
   },
   async fetch() {
+    require('dotenv').config()
 
     var code = await this.$auth.strategy.token.get()
     await this.$http.setHeader('authorization', `${code}`)
