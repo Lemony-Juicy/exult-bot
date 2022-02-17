@@ -48,8 +48,7 @@
             <!-- v-if="!$auth.loggedIn" @click="login()" -->
             <button id="login" class="bg-primary-blue text-white mt-4 mb-4 ml-10 w-24 md:ml-8 md:mt-2 rounded-lg h-8 font-semibold">Login</button>
             <!-- " this is u: {{ $auth.user.username }} # {{ $auth.user.discriminator }} " -->
-            <!-- v-else -->
-            <!-- <button onclick="location.href='/dashboard/dashboard'" id="login" class="bg-primary-blue text-white mt-4 mb-4 ml-10 w-28 md:ml-8 md:mt-2 rounded-lg h-8 font-semibold">Dashboard</button> -->
+            <!-- <button v-else onclick="location.href='/dashboard'" id="login" class="bg-primary-blue text-white mt-4 mb-4 ml-10 w-28 md:ml-8 md:mt-2 rounded-lg h-8 font-semibold">Dashboard</button> -->
           </div>
           
         </div>

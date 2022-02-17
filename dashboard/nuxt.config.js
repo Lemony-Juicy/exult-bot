@@ -15,20 +15,21 @@ export default {
       { name: 'format-detection', content: 'telephone=no' },
       // Import Meta Data
       { name: "description", content: "1 Bot, heaps of top tier quality features! It can do it all. With easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions! Why have 10 different bots for each feature when you can have 1 that can do everything you need!"},
-      { name: "keywords", content: "discord,bot," },
+      { name: "keywords", content: "discord,bot,exult,top.gg,discord.py,moderation bot,role menus,utility bot, suggestions bot, fun bot" },
       { name: "author", content: "Exult Games"},
+      { name: "robots", content: "follow, index"},
       // Graph Meta Tags
       { content: "Exult Bot - Home", property: "og:title" },
       { content: "Exult is bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!", property: "og:description" },
       { content: "https://bot.exult.games/", property: "og:url" },
       { content: "website", property: "og:type"},
-      { content: "https://cdn.discordapp.com/attachments/936387855046037524/943615429497221160/Fixed_1.png", property:"og:image" },
+      { content: "https://bot.exult.games/imgs/logo.png", property:"og:image" },
       { content: "Exult Games logo", property: "og:image:alt"},
       { name: "theme-color", content: "#1F2424" },
       // Twitter Meta Tags
       { name: "twitter:title", content: "Exult Bot - Home"},
       { name: "twitter:description", content: "Exult is bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!"},
-      { name: "twitter:image", content: "https://cdn.discordapp.com/attachments/936387855046037524/943615429497221160/Fixed_1.png"},
+      { name: "twitter:image", content: "https://bot.exult.games/imgs/logo.png"},
       { name: "twitter:image:alt", content: "Exult Games logo"},
       { name: "twitter:site", content: "@Andehlive"},
       { name: "twitter:creator", content: "@Andehlive" },
@@ -40,13 +41,16 @@ export default {
     ],
     script: [
       // Global JS Scripts
-      {src: '/js/main.js', defer:true},
     ]
+  },
+
+  serverMiddleware: {
+    '/api': '~/api'
   },
 
   // Global CSS: https://go.nuxtjs.dev/config-css
   css: [
-    '~/static/css/main.css',
+    '@/static/css/main.css',
   ],
 
   // Plugins to run before rendering page: https://go.nuxtjs.dev/config-plugins
@@ -67,8 +71,13 @@ export default {
   modules: [
     '@nuxtjs/axios',
     '@nuxtjs/auth-next',
-    '@nuxt/http'
+    '@nuxt/http',
+    '@nuxtjs/dotenv',
   ],
+
+  dotenv: {
+    /* module options */
+  },
 
   http: {
     
@@ -80,7 +89,7 @@ export default {
         clientId: process.env.CLIENTID,
         clientSecret: process.env.CLIENTSECRET,
         responseType: 'code',
-        scope: ['guilds','identify']
+        scope: ['guilds','identify', 'guilds.members.read']
       },
     },
     redirect: {
@@ -99,5 +108,10 @@ export default {
         autoprefixer: {},
       },
     },
+    extend (config, ctx) {
+      config.node = {
+          fs: "empty"
+      };
+  }
   }
 }

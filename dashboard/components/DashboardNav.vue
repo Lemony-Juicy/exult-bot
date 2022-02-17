@@ -14,7 +14,7 @@
                 <ul class="w-80-cent mt-2 -ml-7">
                     <div class="items-center inline-flex mt-2">
                         <img src="~/static/imgs/dashboard.svg" class="relative left-8 active-svg" alt="dashboard icon">
-                        <NuxtLink to="/dashboard/dashboard" class="cursor-pointer">
+                        <NuxtLink to="/dashboard" class="cursor-pointer">
                         <li class="active border-0 w-52 rounded-lg p-px2 text-gray-400"><p class="ml-12">Dashboard</p></li>
                         </NuxtLink>
                     </div>

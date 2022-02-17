@@ -18,7 +18,9 @@
     </div>
     <div class="w-full h-20 mb-12 bg-blue-accent flex md:justify-between text-white opacity-85 justify-center">
         <h1 class="text-xl pt-6 font-semibold md:pl-16 lg:pl-48 xl:pl-52">Currently in <a class="red-accent">81</a> servers, serving <a class="red-accent">65595</a> people</h1>
-        <button class=" bg-primary-blue h-10 px-9 rounded-lg my-auto hidden md:block md:mr-20 lg:mr-52 xl:mr-96">Learn More</button>
+        <!-- v-if="!$auth.loggedIn" @click="login()" -->
+        <button class=" bg-primary-blue h-10 px-9 rounded-lg my-auto hidden md:block md:mr-20 lg:mr-52 xl:mr-96">Login</button>
+        <!-- <button v-else onclick="location.href='/dashboard'" class="bg-primary-blue h-10 px-9 rounded-lg my-auto hidden md:block md:mr-20 lg:mr-52 xl:mr-96">Go to Dashboard</button> -->
     </div>
     <div class="flex lg:justify-between text-center flex-col lg:flex-row pt-4">
         <div class="text-white w-full lg:flex lg:flex-col lg:justify-start mt-20 from-left slide-in">
@@ -104,7 +106,12 @@
 
 <script>
 export default {
-  name: 'ExultLandingTop'
+  name: 'ExultLandingTop',
+  methods: {
+    login() {
+      this.$auth.loginWith('discord')
+    }
+  }
 }
 
 </script>
