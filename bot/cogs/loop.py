@@ -1,10 +1,11 @@
 import discord
 from discord.ext import commands
-from datetime import datetime
 import asyncio
 
 from database import cases
 from kimetsu import embed
+
+from database.config import GuildConfigDB
 
 Embed = embed.Embed.embed
 
@@ -36,6 +37,13 @@ class LoopControl(commands.Cog):
                 await member.send(embed=embed)
             except:
                 return
+            
+    async def guild_config_check(self):
+        outdated = await GuildConfigDB(self.bot.db).get_outdated_configs()
+        if len(outdated) >= 1:
+            for guild in outdated:
+                await GuildConfigDB(self.bot.db).remove_guild(guild[0])
+                await self.bot.get_channel(933494408203100170).send(embed=discord.Embed(description=f"{guild[1]} `({guild[0]})` has been removed from the guild config."))
         
     async def loop_punish_check(self):
         while self.loop:
