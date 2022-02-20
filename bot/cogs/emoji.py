@@ -1,8 +1,6 @@
 import discord
 from discord.ext import commands
 
-import aiohttp
-
 class Emojis(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -27,6 +25,6 @@ class Emojis(commands.Cog):
             if e.name.lower() == name:
                 return await e.delete(reason=f"Deleted by {ctx.author}")
         await ctx.send(embed=discord.Embed(description=f"Couldn't find emoji with name {name}.", colour=self.bot.red))
-        
+
 def setup(bot):
     bot.add_cog(Emojis(bot))

@@ -141,9 +141,7 @@ class Counting(commands.Cog):
             else:
                 await message.add_reaction("❌")
                 await self.db.reset(message.channel.id)
-                await message.reply(embed=discord.Embed(description=f"Oh no! It seems {message.author.mention} doesn't know that `{number} + 1` is {number+1}! To start counting again, type 1!", colour=self.bot.red))
-                
-        
+                await message.reply(embed=discord.Embed(description=f"Oh no! It seems {message.author.mention} doesn't know that `{number} + 1` is {number+1}! To start counting again, type 1!", colour=self.bot.red))        
 
 def setup(bot):
     bot.add_cog(Counting(bot))

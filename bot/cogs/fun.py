@@ -1,11 +1,8 @@
-from pprint import pformat
 import discord
 from discord.ext import commands
 import config
 import requests
-import os
 import asyncio
-from typing import Union
 from kimetsu import embed
 Embed = embed.Embed.embed
 import aiohttp
@@ -100,7 +97,7 @@ class Fun(commands.Cog):
             )
             await ctx.send(embed=embed)
         
-    @commands.command(slash_command=True, description="whos that pokemon?")
+    @commands.command(description="whos that pokemon?")
     @commands.cooldown(1, 15, commands.BucketType.guild)
     async def wtp(self, ctx):
         """You and you're friends get 3 tries to guess the right pokemon."""
@@ -152,31 +149,29 @@ class Fun(commands.Cog):
             image=file_a
         ))
     
-    @commands.command(slash_command=True, description="sends a joke")
+    @commands.command(description="sends a joke")
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def joke(self, ctx):
         """Send a joke"""
-        authorization_key = ""
         headers = {
-            'Authorization': f"{authorization_key}"
+            'Authorization': "MTYzMTg3Mzk4Nw.VIpkBtkBNQRy1AWV8GZ08OFhEWSGUK8D.071b411fc46ce97f"
         }
         res = requests.get('https://api.dagpi.xyz/data/joke', headers=headers).json()
         
         await ctx.send(res["joke"])
 
-    @commands.command(slash_command=True, description="sends a roast")
+    @commands.command(description="sends a roast")
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def roast(self, ctx):
         """Send a roast"""
-        authorization_key = ""
         headers = {
-            'Authorization': f"{authorization_key}"
+            'Authorization': "MTYzMTg3Mzk4Nw.VIpkBtkBNQRy1AWV8GZ08OFhEWSGUK8D.071b411fc46ce97f"
         }
         res = requests.get('https://api.dagpi.xyz/data/roast', headers=headers).json()
         
         await ctx.send(res["roast"])
     
-    @commands.command(slash_command=True, description="sends a fact")
+    @commands.command(description="sends a fact")
     @commands.cooldown(1, 15, commands.BucketType.user)
     async def fact(self, ctx):
         """Random fact generator"""
@@ -185,18 +180,16 @@ class Fun(commands.Cog):
         embed = discord.Embed(description=fact.split('\n')[0], colour=0x87136f)
         await ctx.send(embed=embed)
         
-    @commands.command(slash_command=True, alases=['forecast'], description="search for real-time weather, anywhere!")
+    @commands.command(alases=['forecast'], description="search for real-time weather, anywhere!")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def weather(self, ctx, *, query):
         """Search for real-time weather."""
-        weather_id = ""
-        weather_key = ""
         url = "https://community-open-weather-map.p.rapidapi.com/weather"
 
-        querystring = {"q": query, "lat": "0", "lon": "0", "id": f"{weather_id}", "lang": "null",
+        querystring = {"q": query, "lat": "0", "lon": "0", "id": "2172797", "lang": "null",
                        "units": "\"metric\" or \"imperial\"", "mode": "xml, html"}
         h = {
-            'x-rapidapi-key': f"{weather_key}",
+            'x-rapidapi-key': "c97af16bb5msh4a9c4bd102924e7p13f694jsna81d3f25137a",
             'x-rapidapi-host': "community-open-weather-map.p.rapidapi.com"
         }
         response = json.loads(requests.request("GET", url, headers=h, params=querystring).text)
@@ -226,7 +219,7 @@ class Fun(commands.Cog):
                               f"**{wind['speed']}mph**", inline=False)
         await ctx.send(embed=embed)
         
-    @commands.command(slash_command=True, aliases=['typetest', 'wordsperminute'], description="play type-racer in discord!")
+    @commands.command(aliases=['typetest', 'wordsperminute'], description="play type-racer in discord!")
     async def wpm(self, ctx):
         """Repeat a given text as fast as you can to find your fastest WPM!"""
         def check(message):
@@ -258,7 +251,7 @@ class Fun(commands.Cog):
                                                        f"-About **{round((60 / timeTaken) * userWords, 1)}** words per minute\n"
                                                        f"-Or **{round(userLetters / timeTaken, 3)}** Letters per second"))
         
-    @commands.command(slash_command=True, description="sends you an animal picture")
+    @commands.command(description="sends you an animal picture")
     async def animal(self, ctx):
         """Send an animal picture"""
         async with ctx.typing():
