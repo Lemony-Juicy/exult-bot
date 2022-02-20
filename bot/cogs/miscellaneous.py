@@ -1,5 +1,5 @@
 import discord
-from discord.ext import commands, menus
+from discord.ext import commands
 import kimetsu
 Embed = kimetsu.embed.Embed.embed
 
@@ -38,17 +38,17 @@ class Miscellaneous(commands.Cog):
         """Displays info on the mentioned member"""
         await kimetsu.Userinfo(ctx, member).userinfo()
         
-    @commands.command(slash_command=True, description="Pong! 🏓")
+    @commands.command(description="Pong! 🏓")
     async def ping(self, ctx):
         """Pong! 🏓"""
         await ctx.send(f"Pong! 🏓\n**Latency:** `{round(self.bot.latency*1000)}ms`\n**PSQL Latency:** `{round(await self.bot.get_latency()*1000, 2)}ms`")
 
-    @commands.command(slash_command=True, description="invite the bot to your server!")
+    @commands.command(description="invite the bot to your server!")
     async def invite(self, ctx):
         """Invite the bot to your server"""
-        await ctx.send(embed=Embed(title="Click to invite me!", url="https://discord.com/api/oauth2/authorize?client_id=889185777555210281&permissions=8&scope=bot%20applications.commands", timestamp=True))
+        await ctx.send(embed=Embed(title="Click to invite me!", url=self.bot.invite, timestamp=True))
 
-    @commands.command(slash_command=True, description="join our support server!")
+    @commands.command(description="join our support server!")
     async def support(self, ctx):
         """Get an invite to our support server"""
         await ctx.send(embed=Embed(title="Click to join the support server!", url="https://discord.gg/NAFTAtAz5d", timestamp=True))
@@ -59,7 +59,7 @@ class Miscellaneous(commands.Cog):
         num = random.randint(1, limit)
         await ctx.message.reply(embed=discord.Embed(title=f"Your random number is {num}!", colour=discord.Colour.green()))
 
-    @commands.command(slash_command=True, description="displays bot information")
+    @commands.command(description="displays bot information")
     async def info(self, ctx):
         """Send bot information."""
         msg = f"""**Bot version:** `{self.bot.__version__}`
@@ -81,7 +81,7 @@ class Miscellaneous(commands.Cog):
 
         await ctx.send(embed=embed)
 
-    @commands.command(slash_command=True, description="send feedback to the developer server")
+    @commands.command(description="send feedback to the developer server")
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def feedback(self, ctx, *, message=None):
         """Send feedback to the developer server"""
@@ -99,6 +99,13 @@ class Miscellaneous(commands.Cog):
         msg = await channel.send(embed=embed)
         
         await ctx.send("Message sent! Thanks for your feedback!")
+        
+    @commands.command()
+    @commands.has_permissions(change_nickname=True)
+    async def nick(self, ctx, nick: str):
+        """Edit your own nickname!"""
+        await ctx.author.edit(nick=nick)
+        await ctx.send(embed=discord.Embed(description=f"Changed {ctx.author}'s nickname to {nick}", colour=self.bot.red))
         
 def setup(bot):
     bot.add_cog(Miscellaneous(bot))
