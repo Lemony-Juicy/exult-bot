@@ -1,124 +1,58 @@
+from cProfile import label
 import discord
 from ast import literal_eval
 
 from database.suggestions import SuggestDB
-            
-class TicketSetupPanelCat:
     
-    class Dropdown(discord.ui.Select):
-        def __init__(self, ctx):
-            self.ctx = ctx
-            options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
-            super().__init__(placeholder="Category where the channel you want the panel to be sent is in", options=options, min_values=1, max_values=1)
-            
-        async def callback(self, interaction: discord.Interaction):
-            self.view.values = self.values
-            self.view.stop()
-            
+class CategoriesDropdown(discord.ui.Select):
+    def __init__(self, ctx):
+        self.ctx = ctx
+        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
+        super().__init__(placeholder="Select a Category", options=options, min_values=1, max_values=1)
+        
+    async def callback(self, interaction: discord.Interaction):
+        self.view.values = self.values
+        self.view.stop()
+
+class CategoriesDropdownView(discord.ui.View):
+    def __init__(self, ctx):
+        self.ctx = ctx
+        super().__init__()
+        self.add_item(CategoriesDropdown(self.ctx))
+
     
-    class DropdownView(discord.ui.View):
-        def __init__(self, ctx):
-            self.ctx = ctx
-            super().__init__()
-            self.add_item(TicketSetupPanelCat.Dropdown(self.ctx))
+class ChannelsDropdown(discord.ui.Select):
+    def __init__(self, cat):
+        self.cat = cat
+        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.cat.text_channels]
+        super().__init__(placeholder="Select a Channel", options=options, min_values=1, max_values=1)
+        
+    async def callback(self, interaction: discord.Interaction):
+        self.view.values = self.values
+        self.view.stop()
+        
+class ChannelsDropdownView(discord.ui.View):
+    def __init__(self, cat):
+        self.cat = cat
+        super().__init__()
+        self.add_item(ChannelsDropdown(self.cat))
+
             
-class TicketSetupPanelChan:
-    
-    class Dropdown(discord.ui.Select):
-        def __init__(self, cat):
-            self.cat = cat
-            options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.cat.text_channels]
-            super().__init__(placeholder="Select the channel where you want the ticket panel to send", options=options, min_values=1, max_values=1)
-            
-        async def callback(self, interaction: discord.Interaction):
-            self.view.values = self.values
-            self.view.stop()
-            
-    class DropdownView(discord.ui.View):
-        def __init__(self, cat):
-            self.cat = cat
-            super().__init__()
-            self.add_item(TicketSetupPanelChan.Dropdown(self.cat))
-            
-class TicketCategory:
-    
-    class Dropdown(discord.ui.Select):
-        def __init__(self, ctx):
-            self.ctx = ctx
-            options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
-            super().__init__(placeholder="Category where the channel you want the tickets to be created in", options=options, min_values=1, max_values=1)
-            
-        async def callback(self, interaction: discord.Interaction):
-            self.view.values = self.values
-            self.view.stop()
-            
-    class DropdownView(discord.ui.View):
-        def __init__(self, ctx):
-            self.ctx = ctx
-            super().__init__()
-            self.add_item(TicketCategory.Dropdown(self.ctx))
-            
-class TicketSetupLogCat:
-    
-    class Dropdown(discord.ui.Select):
-        def __init__(self, ctx):
-            self.ctx = ctx
-            options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
-            super().__init__(placeholder="Category where the channel you want the logs to be sent is in", options=options, min_values=1, max_values=1)
-            
-        async def callback(self, interaction: discord.Interaction):
-            self.view.values = self.values
-            self.view.stop()
-            
-    
-    class DropdownView(discord.ui.View):
-        def __init__(self, ctx):
-            self.ctx = ctx
-            super().__init__()
-            self.add_item(TicketSetupLogCat.Dropdown(self.ctx))
-            
-class TicketSetupLogChan:
-    
-    class Dropdown(discord.ui.Select):
-        def __init__(self, cat):
-            self.cat = cat
-            options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.cat.text_channels]
-            super().__init__(placeholder="Select the channel where you want the ticket embed to send", options=options, min_values=1, max_values=1)
-            
-        async def callback(self, interaction: discord.Interaction):
-            self.view.values = self.values
-            self.view.stop()
-            
-    class DropdownView(discord.ui.View):
-        def __init__(self, cat):
-            self.cat = cat
-            super().__init__()
-            self.add_item(TicketSetupLogChan.Dropdown(self.cat))
-            
-class TicketSetupConfirm(discord.ui.View):
+class ConfirmDenyView(discord.ui.View):
     def __init__(self):
         super().__init__()
         self.value = None
         
     @discord.ui.button(label="✅", style=discord.ButtonStyle.green)
     async def confirm(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.send_message("Sending Ticket...", ephemeral=True)
         self.value = True
         self.stop()
         
     @discord.ui.button(label="❌", style=discord.ButtonStyle.red)
     async def cancel(self, button: discord.ui.Button, interaction: discord.Interaction):
-        await interaction.response.send_message("Cancelling ticket panel setup...", ephemeral=True)
         self.value = False
         self.stop()
-        
-class CloseTicket(discord.ui.View):
-    def __init__(self):
-        super().__init__()
-    
-    @discord.ui.button(label="Close Ticket", style=discord.ButtonStyle.red, emoji="❌", custom_id="CloseTicket")
-    async def closeticket(self, button: discord.ui.Button, interaction: discord.Interaction):
-        return
+
 
 class OpenTicket(discord.ui.View):
     def __init__(self):
@@ -127,124 +61,15 @@ class OpenTicket(discord.ui.View):
     @discord.ui.button(label="Open Ticket", style=discord.ButtonStyle.green, emoji="📥", custom_id="OpenTicket")
     async def openticket(self, button: discord.ui.Button, interaction: discord.Interaction):
         return
+
+class CloseTicket(discord.ui.View):
+    def __init__(self):
+        super().__init__()
     
-class LogsBase:
-    
-    class Dropdown(discord.ui.Select):
-        def __init__(self):
-            options = [
-                discord.SelectOption(label="All", value="All"),
-                discord.SelectOption(label="Create channels for me", value="Create"),
-                discord.SelectOption(label="Channel Logs", value="ChannelLogs"),
-                discord.SelectOption(label="Server Logs", value="ServerLogs"),
-                discord.SelectOption(label="Member Logs", value="MemberLogs"),
-                discord.SelectOption(label="Message Logs", value="MessageLogs"),
-                discord.SelectOption(label="Voice Logs", value="VoiceLogs"),
-                discord.SelectOption(label="Ticket Logs", value="TicketLogs")
-            ]
-            super().__init__(placeholder="What log channel would you like to configure?", options=options)
+    @discord.ui.button(label="Close Ticket", style=discord.ButtonStyle.red, emoji="❌", custom_id="CloseTicket")
+    async def closeticket(self, button: discord.ui.Button, interaction: discord.Interaction):
+        return
 
-        async def callback(self, interaction: discord.Interaction):
-            self.view.values = self.values
-            self.view.stop()
-        
-    class DropdownView(discord.ui.View):
-        def __init__(self):
-            super().__init__()
-            self.add_item(LogsBase.Dropdown())
-            
-class Avatar(discord.ui.View):
-    def __init__(self, link: str, member: discord.Member):
-        super().__init__()
-        self.add_item(discord.ui.Button(label=f"{member}'s avatar", url=link))
-
-class SuggestConfCat(discord.ui.Select):
-    def __init__(self, ctx):
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
-        super().__init__(placeholder="Select the Category that your desired suggestions channel is in", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-
-class SuggestConfCatView(discord.ui.View):
-    def __init__(self, ctx):
-        self.ctx = ctx
-        super().__init__()
-        self.add_item(SuggestConfCat(ctx))
-
-class SuggestConfChan(discord.ui.Select):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.cat.text_channels]
-        super().__init__(placeholder="Select the channel where you want suggestions to be sent", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-        
-class SuggestConfChanView(discord.ui.View):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        super().__init__()
-        self.add_item(SuggestConfChan(self.cat, ctx))
-
-class SuggestConfSafemode(discord.ui.View):
-    def __init__(self, ctx):
-        super().__init__()
-        self.value = None
-        self.ctx = ctx
-
-    @discord.ui.button(label="Enable", style=discord.ButtonStyle.green, emoji="✅")
-    async def enable(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.value = True
-            self.stop()
-
-    @discord.ui.button(label="Disable", style=discord.ButtonStyle.red, emoji="❌")
-    async def disable(self, button: discord.ui.Button, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.value = False
-            self.stop()
-
-class SuggestConfSafeCat(discord.ui.Select):
-    def __init__(self, ctx):
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
-        super().__init__(placeholder="Select the Category for the channel that you want suggestions to await acceptance in.", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-
-class SuggestConfCatSafeView(discord.ui.View):
-    def __init__(self, ctx):
-        self.ctx = ctx
-        super().__init__()
-        self.add_item(SuggestConfSafeCat(ctx))
-
-class SuggestConfSafeChan(discord.ui.Select):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.cat.text_channels]
-        super().__init__(placeholder="Select the channel that you want suggestions to await acceptance in.", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-        
-class SuggestConfChanSafeView(discord.ui.View):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        super().__init__()
-        self.add_item(SuggestConfSafeChan(self.cat, ctx))
 
 class SuggestConfEditMain(discord.ui.Select):
     def __init__(self, ctx):
@@ -262,75 +87,6 @@ class SuggestConfEditMainView(discord.ui.View):
         super().__init__()
         self.add_item(SuggestConfEditMain(ctx))
 
-class SuggestConfEditChannelCat(discord.ui.Select):
-    def __init__(self, ctx):
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
-        super().__init__(placeholder="Select the Category for the channel that you want suggestions to await acceptance in.", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-
-class SuggestConfEditChannelCatView(discord.ui.View):
-    def __init__(self, ctx):
-        super().__init__()
-        self.add_item(SuggestConfEditChannelCat(ctx))
-
-class SuggestConfEditChannel(discord.ui.Select):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.cat.text_channels]
-        super().__init__(placeholder="Select the channel that you want suggestions to await acceptance in.", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-
-class SuggestConfEditChannelView(discord.ui.View):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        super().__init__()
-        self.add_item(SuggestConfEditChannel(self.cat, ctx))
-
-class SuggestConfEditSafeCat(discord.ui.Select):
-    def __init__(self, ctx, safemode):
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.ctx.guild.categories]
-        if safemode:
-            options.insert(0, discord.SelectOption(label="Disable Safemode", value="Disable"))
-        super().__init__(placeholder="Select the Category for the channel that you want suggestions to await acceptance in.", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-
-class SuggestConfEditSafeCatView(discord.ui.View):
-    def __init__(self, ctx, safemode):
-        super().__init__()
-        self.add_item(SuggestConfEditSafeCat(ctx, safemode))
-
-class SuggestConfEditSafeChannel(discord.ui.Select):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        self.ctx = ctx
-        options = [discord.SelectOption(label=l.name, value=str(l.id)) for l in self.cat.text_channels]
-        super().__init__(placeholder="Select the channel that you want suggestions to await acceptance in.", options=options, min_values=1, max_values=1)
-        
-    async def callback(self, interaction: discord.Interaction):
-        if interaction.user.id == self.ctx.author.id:
-            self.view.values = self.values
-            self.view.stop()
-
-class SuggestConfEditSafeChannelView(discord.ui.View):
-    def __init__(self, cat, ctx):
-        self.cat = cat
-        super().__init__()
-        self.add_item(SuggestConfEditSafeChannel(self.cat, ctx))
 
 class SuggsetConfDisableView(discord.ui.View):
     def __init__(self, ctx):
@@ -491,3 +247,4 @@ class PaginatorButton(discord.ui.Button["Paginator"]):
         self.view.page = self.page
         self.view.add_buttons()
         await interaction.message.edit(embed=self.pages[self.page], view=self.view)
+
