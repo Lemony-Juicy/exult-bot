@@ -1,34 +1,44 @@
 import discord
 from discord.ext import commands
 import kimetsu
+#Discord related imports
 
-from datetime import datetime
+from waifuim import WaifuAioClient
 import asyncio
 import asyncpg
 import logging
 import time
 import os
 import aiohttp
+import json
+import nest_asyncio
+nest_asyncio.apply()
+#Regular Imports
 
 import config
 from database import db
 from database.prefix import PrefixDB
 from tools.components import SuggestVotes
-from info import cogs
-import json
-
-import waifuim
-from waifuim import WaifuAioClient, WaifuException
+from cogs.friends import Abberantics
+from cogs.ac.s_slashtest import SlashTest
+#Local file imports
 
 os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
 os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
 os.environ["JISHAKU_HIDE"] = "True"
 
+ignore_exts = ["currency.py", "games.py", "tickets.py"]
+exts = [file for file in os.listdir("cogs") if file.endswith(".py") and not file.startswith("_") and not file.startswith("s_") and not file.startswith("u_") and file not in ignore_exts]
+aexts = ["cogs.ac.s_slashtest", "cogs.ac.u_usertest"]
+
 async def get_prefix(bot, msg):
-    con = PrefixDB(bot.db)
-    result = await con.get(msg.guild.id)
-    prefix = commands.when_mentioned_or(result.get("prefix"))(bot, msg)
-    return prefix
+    try:
+        con = PrefixDB(bot.db)
+        result = await con.get(msg.guild.id)
+        prefix = commands.when_mentioned_or(result.get("prefix"))(bot, msg)
+        return prefix
+    except:
+        return "e!"
 
 class Exult(commands.AutoShardedBot):
     def __init__(self):
@@ -39,7 +49,6 @@ class Exult(commands.AutoShardedBot):
             command_prefix=(get_prefix),
             description="A general purpose bot for any server!",
             intents=discord.Intents.all(),
-            slash_commands=True
         )
         self.db = db.Database()
         self.logger = logging.getLogger(__name__)
@@ -50,14 +59,18 @@ class Exult(commands.AutoShardedBot):
         self.pool = connection.pool
     
     async def setup(self):
-        for ext in cogs.exts: self.load_extension(ext)
-        await self.create_slash_commands()
+        #await self.http.bulk_upsert_guild_commands(self.user.id, 912148314223415316, [])
+        for ext in exts: self.load_extension(f"cogs.{ext[:-3]}") #Cogs
+        for aext in aexts:
+            self.load_extension(aext)
+        self.load_extension("jishaku")
+        await super().setup()
         
     def parsedate(self, date=None):
-        kimetsu.Parsedate(date).parsedate()
+        kimetsu.Time.parsedate(date)
 
     def formatdate(self, date=None):
-        kimetsu.Formatdate.formatdate(date)
+        kimetsu.Time.formatdate(date)
         
     async def get_latency(self):
         _ = []
@@ -67,16 +80,25 @@ class Exult(commands.AutoShardedBot):
             y = time.time()
             _.append(y-x)
         return (_[0] + _[1] + _[2]) / 3
+
+    async def emoji(self):
+        emoji = self.get_emoji(936464383343738910)
+        return emoji
         
     arrow = "<a:arrow:882812954314154045>"
     red = 0xfb5f5f
+    green = 0x2ecc71
+    gold = 0xf1c40f
     invis = '\u200b'
+    invite = "https://discord.com/api/oauth2/authorize?client_id=889185777555210281&permissions=3757567166&scope=bot%20applications.commands"
     persistent_views_added = False
+    
 
     async def on_ready(self):
         print(f"Loaded {len(self.cogs)} cogs, with {len(self.all_commands)} commands.")
         if not self.persistent_views_added:
             self.add_view(SuggestVotes(self))
+            self.add_view(Abberantics.VerifyButton(self))
             print("Persistent views added")
             self.persistent_views_added = True
             print(f"Successfully logged in to {self.user}. ({round(self.latency*1000)}ms)")
@@ -85,7 +107,6 @@ class Exult(commands.AutoShardedBot):
 bot = Exult()
 bot.loop = asyncio.get_event_loop()
 bot.remove_command("help")
-
 
 async def run_bot():
     try:
@@ -126,7 +147,6 @@ def getIntDict(D):
 
 
 def read(file, key, i=2, isDict=True):
-    """Gain data from json file"""
     with open(file) as data:
         try:
             full = json.load(data)[key]
@@ -146,11 +166,11 @@ def read(file, key, i=2, isDict=True):
 
 
 def write(file, writeData, key):
-    """write data to json file"""
     with open(file) as f:
         data = json.load(f)
     data[key] = writeData
     with open(file, 'w') as f:
         json.dump(data, f)
+
 
 bot.run(config.TOKEN)
