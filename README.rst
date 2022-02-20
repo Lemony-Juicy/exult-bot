@@ -63,16 +63,16 @@ Exult Bot Feature Progression
    * - Modmail Feature
      - Emoji Commands
      - Counting Feature
-   * - Modstats Command
-     - 
-     - Emotion Feature
-   * - Nickname Command
-     -
-     - Fact Command
    * - Reaction Roles Feature
      - 
-     - Inrole Command
+     - Emotion Feature
    * - Reminder Commands
+     -
+     - Fact Command
+   * - 
+     - 
+     - Inrole Command
+   * - 
      -
      - Invite Command
    * - 
@@ -86,10 +86,16 @@ Exult Bot Feature Progression
      - Meme Command
    * - 
      -
+     - Modstats Command
+   * - 
+     -
      - Music Feature
    * - 
      -
      - Mute Command
+   * - 
+     -
+     - Nickname Command
    * - 
      -
      - Ping Command
