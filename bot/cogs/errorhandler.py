@@ -51,7 +51,6 @@ class ErrorHandler(commands.Cog):
                 title="Bad argument",
                 description=f"You did not provide a valid {conv_n(error.converters)}, please go check `{ctx.clean_prefix}help {ctx.command.name}`.",
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.UserNotFound):
@@ -60,7 +59,6 @@ class ErrorHandler(commands.Cog):
                 title="User not found",
                 description=f"You did not provide a valid user, please go check `{ctx.clean_prefix}help {ctx.command.name}`.",
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.MemberNotFound):
@@ -69,7 +67,6 @@ class ErrorHandler(commands.Cog):
                 title="Member not found",
                 description=f"You did not provide a valid member, Please go check `{ctx.clean_prefix}help {ctx.command.name}`.",
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.BotMissingPermissions):
@@ -87,7 +84,6 @@ class ErrorHandler(commands.Cog):
                     title="Bot missing permissions",
                     description=_message,
                 )
-                embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
                 await ctx.send(embed=embed)
 
         elif isinstance(error, commands.DisabledCommand):
@@ -96,7 +92,6 @@ class ErrorHandler(commands.Cog):
                 title="Command disabled",
                 description=f"This command has been temporaly disabled, it is probably under maintenance. For more informations join the [support server](https://discord.gg/Hg8kU9pmx9) !",
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
         elif isinstance(error, commands.MaxConcurrencyReached):
             _message = f"This command can only be used **{error.number}** time simultaneously, please retry later."
@@ -105,7 +100,6 @@ class ErrorHandler(commands.Cog):
                 title="Maximum concurrency reached",
                 description=_message,
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.CommandOnCooldown):
@@ -115,7 +109,6 @@ class ErrorHandler(commands.Cog):
             embed = discord.Embed(
                 colour=self.bot.red, title="Command on cooldown", description=_message
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.MissingPermissions):
@@ -133,14 +126,12 @@ class ErrorHandler(commands.Cog):
                     title="Missing permissions",
                     description=_message,
                 )
-                embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
                 await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.MissingRole):
             missing = error.missing_role
             _message = f"You need the **{missing}** role to use this command."
             embed = discord.Embed(title="Missing role", description=_message)
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, discord.Forbidden):
@@ -148,7 +139,6 @@ class ErrorHandler(commands.Cog):
             embed = discord.Embed(
                 colour=self.bot.red, title="Forbidden", description=_message
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed)
 
         elif isinstance(error, commands.NSFWChannelRequired):
@@ -158,14 +148,12 @@ class ErrorHandler(commands.Cog):
                 stitle="NSFW channel required",
                 description=_message,
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
         elif isinstance(error, commands.BadArgument):
             _message = f"You provided at least one wrong argument. Please go check `{ctx.clean_prefix}help {ctx.command}`"
             embed = discord.Embed(
                 colour=self.bot.red, title="Bad argument", description=_message
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.UserInputError):
@@ -173,7 +161,6 @@ class ErrorHandler(commands.Cog):
             embed = discord.Embed(
                 colour=self.bot.red, title="Input error", description=_message
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
 
         elif isinstance(error, commands.NoPrivateMessage):
@@ -181,7 +168,6 @@ class ErrorHandler(commands.Cog):
             embed = discord.Embed(
                 colour=self.bot.red, title="No private message", description=_message
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             try:
                 await ctx.send(embed=embed, delete_after=15)
             except discord.Forbidden:
@@ -193,17 +179,9 @@ class ErrorHandler(commands.Cog):
                 title="Owner-only",
                 description=f"Sorry **{ctx.author}**, but this commmand is an owner-only command and you don't look like {self.bot.get_user(self.bot.owner_ids[0]).name}.",
             )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
             await ctx.send(embed=embed, delete_after=15)
-
         elif isinstance(error, commands.CheckFailure):
-            embed = discord.Embed(
-                colour=self.bot.red,
-                title="Check Failure",
-                description="You do not have the permissions to use this command.",
-            )
-            embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
-            await ctx.send(embed=embed, delete_after=15)
+            return
         else:
 
             try:
@@ -212,7 +190,6 @@ class ErrorHandler(commands.Cog):
                     title="❌ Error",
                     description="Sorry, an error has occured, it has been reported to my developer.",
                 )
-                embed.set_footer(text="OG_Ghost is the best", icon_url=self.bot.user.avatar.url)
                 embed.add_field(
                     name="Traceback :",
                     value=f"```py\n{type(error).__name__} : {error}```",
@@ -231,7 +208,7 @@ class ErrorHandler(commands.Cog):
                     ),
                 )
                 embed_rep.set_footer(
-                    text=f"Requested by: {ctx.author} | ID : {ctx.author.id} | Command: {ctx.command} (OG_Ghost is the best)",
+                    text=f"Requested by: {ctx.author} | ID : {ctx.author.id} | Command: {ctx.command}",
                     icon_url=ctx.author.avatar.url,
                 )
                 await channel.send(embed=embed_rep)
