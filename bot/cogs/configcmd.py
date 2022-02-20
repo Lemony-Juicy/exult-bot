@@ -5,17 +5,12 @@ Embed = embed.Embed.embed
 
 from database.prefix import PrefixDB
 from database.suggestions import SuggestDB
+from database.config import GuildConfigDB
 from tools.components import (
-    SuggestConfCatView, 
-    SuggestConfChanView,
-    SuggestConfSafemode,
-    SuggestConfCatSafeView,
-    SuggestConfChanSafeView,
+    CategoriesDropdownView, 
+    ChannelsDropdownView,
+    ConfirmDenyView,
     SuggestConfEditMainView,
-    SuggestConfEditChannelCatView,
-    SuggestConfEditChannelView,
-    SuggestConfEditSafeCatView,
-    SuggestConfEditSafeChannelView,
     SuggsetConfDisableView)
 
 class ConfigCMD(commands.Cog):
@@ -90,7 +85,7 @@ class ConfigCMD(commands.Cog):
             embed.set_footer(text=f"Having trouble? Join the support server using {ctx.prefix}support!")
             await ctx.send(embed=embed)
 
-    @config.command(slash_command=True, description="change the bot's prefix", aliases=["config prefix"])
+    @config.command(description="change the bot's prefix", aliases=["config prefix"])
     @commands.has_permissions(manage_guild=True)
     async def prefix(self, ctx, new_prefix=None):
         """Change the bot's prefix"""
@@ -111,15 +106,24 @@ class ConfigCMD(commands.Cog):
         
         return await ctx.message.reply(embed=embed)
 
-    @config.command(slash_command=True, aliases=['suggest', 'suggestion'])
+    @config.command()
+    @commands.has_permissions(manage_nicknames=True)
+    async def botnick(self, ctx, *, nickname: str=None):
+        if nickname is None:
+            return await ctx.send(embed=discord.Embed(description=f"My nickname is **{ctx.guild.me.display_name}**!", colour=self.bot.red))
+        oldnick = ctx.guild.me.display_name
+        if nickname.lower() == "reset":
+            nickname = self.bot.user.name
+        await ctx.guild.me.edit(nick=nickname)
+        await ctx.send(embed=discord.Embed(description=f"Successfully changed my nickname from **{oldnick}** -> **{nickname}**!", colour=discord.Colour.green()))
+
+    @config.command(aliases=['suggest', 'suggestion'])
     @commands.has_permissions(manage_guild=True)
     async def suggestions(self, ctx):
-        if ctx.guild.id != 912148314223415316:
-            return
         guildconf = await SuggestDB(self.bot.db).getconf(ctx.guild.id)
         if guildconf is None:
             """   SELECT CATEGORY OF THE SUGGESTIONS CHANNEL   """
-            view = SuggestConfCatView(ctx)
+            view = CategoriesDropdownView(ctx)
             embed = discord.Embed(description="Please select the category in which your desired suggestions channel is in below.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon, name="Suggestions Setup")
             msg = await ctx.send(embed=embed, view=view)
             await view.wait()
@@ -128,7 +132,7 @@ class ConfigCMD(commands.Cog):
             await msg.edit(embed=embed, view=None)
 
             """   SELECT CHANNEL WITHIN CHOSEN CATEGORY   """
-            view = SuggestConfChanView(ctx.guild.get_channel(int(cat_id)), ctx)
+            view = ChannelsDropdownView(ctx.guild.get_channel(int(cat_id)), ctx)
             embed = discord.Embed(description="Please select the channel that you would like suggestions to be sent to below.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon.url, name="Suggestions Setup")
             msg = await ctx.send(embed=embed, view=view)
             await view.wait()
@@ -137,7 +141,7 @@ class ConfigCMD(commands.Cog):
             await msg.edit(embed=embed, view=None)
 
             """   SAFEMODE ENABLE/DISABLE   """
-            view = SuggestConfSafemode(ctx)
+            view = ConfirmDenyView(ctx)
             embed = discord.Embed(description="**Would you like to enable safemode?**\n\n> Safemode means that a suggestion will have to be allowed by a higher-up before being sent into your suggestions channel. Please select a button below to either enable/disable safemode.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon.url, name="Suggestions Setup")
             msg = await ctx.send(embed=embed, view=view)
             await view.wait()
@@ -151,7 +155,7 @@ class ConfigCMD(commands.Cog):
 
             """   GET SAFEMODE CAT IF ENABLED """
             if safemodebool:
-                view = SuggestConfCatSafeView(ctx)
+                view = CategoriesDropdownView(ctx)
                 embed = discord.Embed(description="Please select the Category for the channel that you want suggestions to await acceptance in.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon.url, name="Suggestions Setup")
                 msg = await ctx.send(embed=embed, view=view)
                 await view.wait()
@@ -160,7 +164,7 @@ class ConfigCMD(commands.Cog):
                 await msg.edit(embed=embed, view=None)
 
                 """GET SAFEMODE CHANNEL IF ENABLED"""
-                view = SuggestConfChanSafeView(ctx.guild.get_channel(int(safemodecat)), ctx)
+                view = ChannelsDropdownView(ctx.guild.get_channel(int(safemodecat)), ctx)
                 embed = discord.Embed(description="Select the channel that you want suggestions to await acceptance in.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon.url, name="Suggestions Setup")
                 msg = await ctx.send(embed=embed, view=view)
                 await view.wait()
@@ -189,7 +193,7 @@ class ConfigCMD(commands.Cog):
             if setting_to_change == "Suggestions Channel":
                 """   GET CHANNEL CATEGORY   """
                 embed = discord.Embed(description="Please select the category in which your desired suggestions channel is in below.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon, name="Suggestions Config")
-                view = SuggestConfEditChannelCatView(ctx)
+                view = CategoriesDropdownView(ctx)
                 msg = await ctx.send(embed=embed, view=view)
                 await view.wait()
                 category = view.values[0]
@@ -197,7 +201,7 @@ class ConfigCMD(commands.Cog):
                 await msg.edit(embed=embed, view=None)
                 """   GET CHANNEL FROM CATEGORY   """
                 embed = discord.Embed(description="Please select the channel that you would like suggestions to be sent to below.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon.url, name="Suggestions Config")
-                view = SuggestConfEditChannelView(self.bot.get_channel(int(category)), ctx)
+                view = ChannelsDropdownView(self.bot.get_channel(int(category)), ctx)
                 msg = await ctx.send(embed=embed, view=view)
                 await view.wait()
                 channel = view.values[0]
@@ -210,7 +214,7 @@ class ConfigCMD(commands.Cog):
             elif setting_to_change == "Safemode":
                 """   GET SAFEMODE CATEGORY   """
                 embed = discord.Embed(description="Please select the category in which your desired safemode channel is in below.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon, name="Suggestions Config")
-                view = SuggestConfEditSafeCatView(ctx, guildconf[1])
+                view = CategoriesDropdownView(ctx, guildconf[1])
                 msg = await ctx.send(embed=embed, view=view)
                 await view.wait()
                 category = view.values[0]
@@ -222,7 +226,7 @@ class ConfigCMD(commands.Cog):
                 await msg.edit(embed=embed, view=None)
                 """   GET SAFEMODE CHANNEL   """
                 embed = discord.Embed(description="Please select the channel that you would like safemode suggestions to be sent to below.", colour=self.bot.red).set_author(icon_url=ctx.guild.icon.url, name="Suggestions Config")
-                view = SuggestConfEditSafeChannelView(self.bot.get_channel(int(category)), ctx)
+                view = ChannelsDropdownView(self.bot.get_channel(int(category)), ctx)
                 msg = await ctx.send(embed=embed, view=view)
                 await view.wait()
                 channel = view.values[0]
@@ -245,6 +249,12 @@ class ConfigCMD(commands.Cog):
                 elif not disabled:
                     embed.description += f"\n\n**[EXPIRED] - Option Selected:** `Don't Disable Feature`"
                     await msg.edit(embed=embed, view=None)
+
+    @config.command(aliases=['mute'])
+    @commands.has_permissions(manage_guild=True)
+    async def addmute(self, ctx, muterole: discord.Role):
+        await GuildConfigDB(self.bot.db).add_conf(ctx.guild.id, "mute", muterole.id)
+        await ctx.send(embed=discord.Embed(description=f"Successfully assigned mute role to {muterole.mention}!", colour=self.bot.red))
 
 def setup(bot):
     bot.add_cog(ConfigCMD(bot))
