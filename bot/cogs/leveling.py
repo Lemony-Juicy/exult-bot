@@ -5,7 +5,7 @@ from discord.ext import commands
 from math import *
 from database.leveling import LevelingDB
 
-from easy_pil import Canvas, Editor, Font, Text
+from easy_pil import Canvas, Editor, Font
 import os
 
 
@@ -60,7 +60,7 @@ class Leveling(commands.Cog):
         self.db = LevelingDB(bot.db)
     
     # setbio command
-    @commands.command(slash_command=True, aliases=["sb"])
+    @commands.command(aliases=["sb"])
     @commands.cooldown(1, 30, commands.BucketType.user)
     async def setbio(self, ctx, *, msg: str = None):
         if ctx.guild.id == 912148314223415316:
@@ -71,7 +71,7 @@ class Leveling(commands.Cog):
 
             await ctx.send("Done! Your bio has been set to {}.".format(msg))
 
-    @commands.command(slash_command=True, aliases=["lvl", "level", "xp", "exp", "stats"], description="Lookup someone's stats on the server")
+    @commands.command(aliases=["lvl", "level", "xp", "exp", "stats"], description="Lookup someone's stats on the server")
     @commands.cooldown(1, 5, commands.BucketType.user)
     async def rank(self, ctx, member: discord.Member = None):
         """ Lookup someone's stats on the server """
@@ -142,32 +142,49 @@ class Leveling(commands.Cog):
 
             os.remove(f"assets/{member.name}_pfp.png")
 
-    @commands.group(slash_command=True, aliases=["lvls", "levels"])
+    @commands.group(aliases=["lvls", "levels"])
     @commands.cooldown(1, 5, commands.BucketType.user)
     @commands.has_permissions(manage_guild=True)
     async def levelling(self, ctx):
         pass
     
-    @levelling.command(slash_command=True, description="Turn on levelling for the server")
+    @levelling.command(description="Turn on levelling for the server")
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.has_permissions(manage_guild=True)
     async def on(self, ctx):
         await self.db.set_levelling(ctx.guild.id, True)
         await ctx.send(f"{ctx.author.mention} has turned on levelling for the server!")
     
-    @levelling.command(slash_command=True, description="Turn off levelling for the server")
+    @levelling.command(description="Turn off levelling for the server")
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.has_permissions(manage_guild=True)
     async def off(self, ctx):
         await self.db.set_levelling(ctx.guild.id, False)
         await ctx.send(f"{ctx.author.mention} has turned off levelling for the server!")
 
-    @levelling.command(slash_command=True, description="Turn off levelling for the server")
+    @levelling.command(description="Turn off levelling for the server")
     @commands.cooldown(1, 60, commands.BucketType.user)
     @commands.has_permissions(manage_guild=True)
     async def toggle(self, ctx):
         res = await self.db.set_levelling(ctx.guild.id, None)
         await ctx.send(f"{ctx.author.mention} has turned {'on' if res else 'off'} levelling for the server!")
+    
+    @commands.command(description="Displays the top-10 users with the highest level", aliases=['lb', 'leaderboard'])
+    @commands.cooldown(1, 10, commands.BucketType.user)
+    async def top(self, ctx):
+        res = await self.db.leaderboard(ctx.guild.id)
+
+        if not res:
+            return await ctx.send("No one has leveled up yet!")
+        
+        embed = discord.Embed(title="Top 10 Users", description="", color=self.bot.red)
+        
+        # iterate through the results and add them to the embed
+        for i, r in enumerate(res):
+            user = ctx.guild.get_member(r[0])
+            embed.description += f"**{i+1}.** {user.name}#{user.discriminator}: **Level:** {r[2]}\n"
+
+        await ctx.send(embed=embed)
 
 
 def setup(bot):
