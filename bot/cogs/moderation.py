@@ -49,6 +49,8 @@ class Moderation(commands.Cog):
         
     class PurgeAmount(commands.Converter):
         async def convert(self, ctx, argument):
+            if not argument:
+                return None 
             amount = 1 if argument is None else argument
             amount = 100 if int(argument) > 100 else argument
             return int(amount)
@@ -142,6 +144,8 @@ class Moderation(commands.Cog):
     #@Check.module("purge")
     async def purge(self, ctx, amount: PurgeAmount=None):
         """Purge messages"""
+        if not amount:
+            return await ctx.send(embed=discord.Embed(description=f"Please provide a number of messages to purge.", colour=self.bot.red))
         await ctx.message.delete()
         deleted = await ctx.channel.purge(limit=amount)
         embed = Embed(self.bot).embed(title=f"Purged {len(deleted)} messages")
@@ -152,6 +156,10 @@ class Moderation(commands.Cog):
     #@Check.module("purge")
     async def member(self, ctx, member: discord.Member = None, amount: PurgeAmount=None):
         """Purge messages sent by a given member"""
+        if not member:
+            return await ctx.send(embed=discord.Embed(description=f"Please provide a member to purge.", colour=self.bot.red))
+        elif not amount:
+            return await ctx.send(embed=discord.Embed(description=f"Please provide a number of messages to purge.", colour=self.bot.red))
         await ctx.message.delete()
         deleted = await ctx.channel.purge(limit=amount, check=lambda m: m.author == member)
         embed = Embed(self.bot).embed(title=f"Purged {len(deleted)} messages from {member}")
@@ -299,7 +307,6 @@ class Moderation(commands.Cog):
         await self.cdb.add_case("untimeout", ctx.guild.id, member.id, ctx.author.id, reason, None)
         
     @commands.command()
-    @commands.is_owner()
     async def modstats(self, ctx, member:discord.Member=None):
         member = ctx.author if not member else member
         x = await self.cdb.get_cases_by_moderator(member.id)
@@ -325,6 +332,87 @@ class Moderation(commands.Cog):
         else:
             view = None
         await ctx.send(embed=embeds[0], view=view)
-
+        
+    @commands.command()
+    @Check.messages()
+    async def cases(self, ctx, member: discord.Member=None):
+        member = ctx.author if not member else member
+        x = await self.cdb.get_cases_for_member(member.guild.id, member.id)
+        if len(x) == 0:
+            return await ctx.send(embed=discord.Embed(description=f"{member.mention} has no cases to display!", colour=self.bot.red))
+        embeds =[]
+        formatted_cases = self.get_chunks(5, x)
+        case_num = 0
+        for cases in formatted_cases:
+            embed = discord.Embed(colour=self.bot.red).set_author(icon_url=member.avatar.url, name=f"{member.name}'s Cases")
+            for case in cases:
+                case_num +=1
+                last_updated = "" if not case[7] else f"\nLast updated: {kimetsu.Time.parsedate((datetime.fromisoformat(case[7])))}"
+                value = f"Case ID: {case[0]}\n" \
+                        f"Case Type: {case[1].capitalize()}\n" \
+                        f"Reason: {case[5]}\n" \
+                        f"Punished at: {kimetsu.Time.parsedate((datetime.fromisoformat(case[6])))}{last_updated}"
+                embed.add_field(name=f"Record: #{case_num}", value=value, inline=False)
+                embed.set_footer(text=f"Total Records: {len(x)}")
+            embeds.append(embed)
+        if len(embeds) > 1:
+            view = Paginator(ctx=ctx, pages=embeds)
+        else:
+            view = None
+        await ctx.send(embed=embeds[0], view=view)
+        
+    @commands.group(invoke_without_command=True)
+    async def case(self, ctx):
+        return
+    
+    @case.command(aliases=['update'])
+    @Check.messages()
+    async def edit(self, ctx, case_number: int, *, reason):
+        x = await self.cdb.get_case(case_number)
+        if len(x) == 0:
+            return await ctx.send(embed=discord.Embed(description=f"Case #{case_number} does not exist.", colour=self.bot.red))
+        member = self.bot.get_user(x[3])
+        await self.cdb.update_case(case_number, reason)
+        await ctx.send(embed=discord.Embed(title=f"Successfully updated case #{case_number}.", colour=self.bot.red).add_field(name="Old Reason:", value=x[5]).add_field(name="Updated Reason:", value=reason).set_author(icon_url=member.display_avatar.url, name=f"Offender: {member}").set_footer(icon_url=ctx.author.display_avatar.url, text=f"Edited by: {ctx.author}"))
+        
+    @case.command(aliases=['delete', 'del', 'rem', 'rm'])
+    @Check.messages()
+    async def remove(self, ctx, case_number: int):
+        x = await self.cdb.get_case(case_number)
+        if len(x) == 0:
+            return await ctx.send(embed=discord.Embed(description=f"Case #{case_number} does not exist.", colour=self.bot.red))
+        await self.cdb.remove_case(case_number)
+        member = self.bot.get_user(x[3])
+        embed=discord.Embed(title=f"Successfully deleted case #{case_number}", colour=self.bot.red).add_field(name="Case Type:", value=x[1].capitalize()).add_field(name="Issued By:", value=self.bot.get_user(x[4])).add_field(name="Issued at:", value=Time.parsedate(datetime.fromisoformat(x[6])))
+        if x[5]:
+            embed.add_field(name="Reason:", value=x[5])
+        if x[7]:
+            embed.add_field(name="Last Updated:", value=Time.parsedate(datetime.fromisoformat(x[7])))
+        if x[8]:
+            embed.add_field(name="Expires:", value=Time.parsedate(datetime.fromisoformat(x[8])))
+        embed.set_author(icon_url=member.display_avatar.url, name=f"Offender: {member}")
+        embed.set_footer(icon_url=ctx.author.display_avatar.url, text=f"Deleted by: {ctx.author}")
+        await ctx.send(embed=embed)
+        
+    @case.command(aliases=['show', 'info'])
+    @Check.messages()
+    async def display(self, ctx, case_number: int=None):
+        if not case_number:
+            return await ctx.send(embed=discord.Embed(description="Please provide a case id to display", colour=self.bot.red))
+        x = await self.cdb.get_case(case_number)
+        if len(x) == 0:
+            return await ctx.send(embed=discord.Embed(description=f"Case #{case_number} does not exist.", colour=self.bot.red))
+        member = self.bot.get_user(x[3])
+        embed=discord.Embed(colour=self.bot.red).add_field(name="Case Type:", value=x[1].capitalize()).add_field(name="Issued By:", value=self.bot.get_user(x[4])).add_field(name="Issued at:", value=Time.parsedate(datetime.fromisoformat(x[6])))
+        if x[5]:
+            embed.add_field(name="Reason:", value=x[5])
+        if x[7]:
+            embed.add_field(name="Last Updated:", value=Time.parsedate(datetime.fromisoformat(x[7])))
+        if x[8]:
+            embed.add_field(name="Expires:", value=Time.parsedate(datetime.fromisoformat(x[8])))
+        embed.set_author(icon_url=member.display_avatar.url, name=f"Offender: {member}")
+        embed.set_footer(icon_url=ctx.guild.icon.url, text=f"Case ID: #{case_number}")
+        await ctx.send(embed=embed)
+    
 def setup(bot):
     bot.add_cog(Moderation(bot))
