@@ -154,7 +154,7 @@ class Fun(commands.Cog):
     async def joke(self, ctx):
         """Send a joke"""
         headers = {
-            'Authorization': "MTYzMTg3Mzk4Nw.VIpkBtkBNQRy1AWV8GZ08OFhEWSGUK8D.071b411fc46ce97f"
+            'Authorization': config.DAGPI_TOKEN
         }
         res = requests.get('https://api.dagpi.xyz/data/joke', headers=headers).json()
         
@@ -165,7 +165,7 @@ class Fun(commands.Cog):
     async def roast(self, ctx):
         """Send a roast"""
         headers = {
-            'Authorization': "MTYzMTg3Mzk4Nw.VIpkBtkBNQRy1AWV8GZ08OFhEWSGUK8D.071b411fc46ce97f"
+            'Authorization': config.DAGPI_TOKEN
         }
         res = requests.get('https://api.dagpi.xyz/data/roast', headers=headers).json()
         
