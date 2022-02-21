@@ -52,21 +52,24 @@ Exult Bot Feature Progression
      - In Progress
      - Completed
    * - Automod Feature
-     - Currency Feature
+     - Currency Feature - Mixed
      - Animal Command
-   * - Cases Commands
-     - Leveling Feature
-     - Avatar Command
-   * - Game Commands
-     - Marry/divorce Commands
-     - Ban Command
    * - Modmail Feature
-     - Emoji Commands
-     - Counting Feature
+     - Game Commands - Ethan
+     - Avatar Command
    * - Reaction Roles Feature
+     - Leveling Feature - Ethan
+     - Ban Command
+   * - Reminder Commands
+     - Marry/divorce Commands - Andeh
+     - Cases Commands
+   * - 
+     - Emoji Commands - Andeh
+     - Counting Feature
+   * -
      - 
      - Emotion Feature
-   * - Reminder Commands
+   * - 
      -
      - Fact Command
    * - 
