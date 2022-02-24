@@ -20,7 +20,7 @@ export default {
       { name: "robots", content: "follow, index"},
       // Graph Meta Tags
       { content: "Exult Bot - Home", property: "og:title" },
-      { content: "Exult is bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!", property: "og:description" },
+      { content: "Exult is a bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!", property: "og:description" },
       { content: "https://bot.exult.games/", property: "og:url" },
       { content: "website", property: "og:type"},
       { content: "https://bot.exult.games/imgs/logo.png", property:"og:image" },
@@ -28,7 +28,7 @@ export default {
       { name: "theme-color", content: "#1F2424" },
       // Twitter Meta Tags
       { name: "twitter:title", content: "Exult Bot - Home"},
-      { name: "twitter:description", content: "Exult is bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!"},
+      { name: "twitter:description", content: "Exult is a bot with an easy yet precise configuration and all the essential features to maintain and protect your server starting from effective moderation to role menus and suggestions!"},
       { name: "twitter:image", content: "https://bot.exult.games/imgs/logo.png"},
       { name: "twitter:image:alt", content: "Exult Games logo"},
       { name: "twitter:site", content: "@Andehlive"},
