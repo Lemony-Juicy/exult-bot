@@ -15,19 +15,13 @@
                     <div class="items-center inline-flex mt-2">
                         <img src="~/static/imgs/dashboard.svg" class="relative left-8 active-svg" alt="dashboard icon">
                         <NuxtLink to="/dashboard" class="cursor-pointer">
-                        <li class="active border-0 w-52 rounded-lg p-px2 text-gray-400"><p class="ml-12">Dashboard</p></li>
+                        <li class="border-0 w-52 rounded-lg p-px2 text-gray-400"><p class="ml-12">Dashboard</p></li>
                         </NuxtLink>
                     </div>
                     <div class="items-center inline-flex mt-2">
                         <img src="~/static/imgs/modules.svg" class="relative left-8" alt="modules icon">
-                        <NuxtLink to="/dashboard/modules" class="cursor-pointer">
-                            <li class=" border-0 w-52 rounded-lg p-px2 text-gray-400"><p class="ml-12">Modules</p></li>
-                        </NuxtLink>
-                    </div>
-                    <div class="items-center inline-flex mt-2">
-                        <img src="~/static/imgs/settings.svg" class="relative left-8" alt="settings icon">
-                        <NuxtLink to="/dashboard/settings" class="cursor-pointer">
-                            <li class=" border-0 w-52 rounded-lg p-px2 text-gray-400"><p class="ml-12">Settings</p></li>
+                        <NuxtLink to="/bot/modules" class="cursor-pointer">
+                            <li class="active border-0 w-52 rounded-lg p-px2 text-gray-400"><p class="ml-12">Modules</p></li>
                         </NuxtLink>
                     </div>
                     <div class="items-center inline-flex mt-2">
@@ -70,6 +64,7 @@ export default {
     if (process.browser) {
       let userid = this.$auth.user.id
       let avatarhash = this.$auth.user.avatar
+
       let img = document.getElementById("avatar")
 
       img.src = `https://cdn.discordapp.com/avatars/${userid}/${avatarhash}.webp?size=80`
