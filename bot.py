@@ -14,7 +14,7 @@ import asyncio
 from typing import Literal, List
 #Regular Imports
 
-from database.database import Database
+from database import *
 #Local Imports
 
 load_dotenv()
@@ -36,7 +36,6 @@ class ExultTest(commands.Bot):
             description="An all-in-one bot to fit all your needs. Moderation, Fun, Utility and More!",
             intents=discord.Intents.all()
         )
-        self.tree = app_commands.CommandTree(self)
         
     async def _init(self):
         connection = self.db.get_connection()
@@ -70,7 +69,8 @@ class ExultTest(commands.Bot):
     persistent_views_added = False
     
     async def on_ready(self):
-        await self.tree.sync(guild=discord.Object(id=912148314223415316))
+        for guild in [912148314223415316, 949429956843290724]:
+            await self.tree.sync(guild=discord.Object(id=guild))
         print(f"Loaded {len(self.cogs)} cogs, with {len(self.all_commands)} commands.")
         if not self.persistent_views_added:
             #print("Persistent views added")
@@ -79,7 +79,6 @@ class ExultTest(commands.Bot):
             print(f"Startup time: {round(time() - self.startTime)}s")
             
 bot = ExultTest()
-tree = bot.tree
 #bot.remove_command("help")
 
 async def run_bot():
