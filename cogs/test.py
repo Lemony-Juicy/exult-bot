@@ -25,18 +25,6 @@ async def slash_test(interaction: discord.Interaction, name: str):
 @app_commands.command()
 async def modal_slash_test(interaction: discord.Interaction):
     await interaction.response.send_modal(TestModal())
-    
-class Slowmode(app_commands.Group): #Example of a slash command group
-    
-    @app_commands.command(name="on", description="Turn on slowmode for this channel")
-    async def slowmode_on(self, interaction: discord.Interaction):
-        await interaction.channel.edit(slowmode_delay=5)
-        await interaction.response.send_message(f"Slowmode has been turned on!", ephemeral=True)
-        
-    @app_commands.command(name="off", description="Turn off slowmode for this channel")
-    async def slowmode_off(self, interaction: discord.Interaction):
-        await interaction.channel.edit(slowmode_delay=None)
-        await interaction.response.send_message(f"Slowmode has been turned off!", ephemeral=True)
         
 @app_commands.context_menu()
 async def bonk(interaction: discord.Interaction, member: discord.Member):
@@ -60,7 +48,6 @@ def setup(bot: Bot):
     tree: app_commands.CommandTree = bot.tree
     tree.add_command(slash_test, guild=discord.Object(id=912148314223415316))
     tree.add_command(modal_slash_test, guild=discord.Object(id=912148314223415316))
-    tree.add_command(Slowmode(), guild=discord.Object(id=912148314223415316))
     tree.add_command(bonk, guild=discord.Object(id=912148314223415316))
     tree.add_command(range_option, guild=discord.Object(id=912148314223415316))
     tree.add_command(fruits, guild=discord.Object(id=912148314223415316))
