@@ -10,3 +10,4 @@ class Database:
         
     async def get_connection(self) -> asyncpg.connection.Connection:
         return await asyncpg.connect(os.environ["PSQL_URI"])
+        

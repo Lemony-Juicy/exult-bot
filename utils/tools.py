@@ -85,6 +85,21 @@ class Time:
         elif isinstance(time, datetime.datetime):
             return datetime.datetime.utcnow() + time
         
+    def minimalise_seconds(seconds):
+        if seconds < 60:
+            return f"{seconds} seconds"
+        m, s = divmod(seconds, 60)
+        if m < 60:
+            return f"{m} minutes and {s} seconds"
+        h, m = divmod(m, 60)
+        if h < 24:
+            return f"{h} hours, {m} minutes"
+        d, h = divmod(h, 24)
+        if d < 7:
+            return f"{d} days, {h} hours"
+        w, d = divmod(d, 7)
+        return f"{w} weeks, {d} days"
+        
 def get_chunks(interval: int, array: list):
     """split up an array into a two dimensional array with the interval specified"""
     total = []

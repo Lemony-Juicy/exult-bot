@@ -1,5 +1,6 @@
 from discord import ButtonStyle, Interaction
-from discord.ui import View, Button
+from discord.ui import View, Button, Modal, TextInput
+from numpy import place
 
 from utils.tools import embed_builder
 
@@ -64,7 +65,31 @@ class BannerButton(Button):
         
 class Avatar(View):
     def __init__(self, member):
-        member = member
         super().__init__()
         self.add_item(AvatarButton("View Avatar", ButtonStyle.secondary, f"avatar{member.id}"))
         self.add_item(BannerButton("View Banner", ButtonStyle.secondary, f"banner{member.id}"))
+        
+class PokemonGuessModal(Modal):
+    def __init__(self):
+        self.guess = None
+        super().__init__("Who's That Pokemon?")
+        self.add_item(TextInput(label="Which pokemon do you think it is?", placeholder="e.g. Pikachu"))
+        
+    async def callback(self, interaction: Interaction):
+        self.guess = self.children[0].value
+
+class StartGuessPokemon(Button):
+    def __init__(self, label, style, custom_id):
+        super().__init__(style=style, label=label, custom_id=custom_id)
+        
+    async def callback(self, interaction: Interaction):
+        modal = PokemonGuessModal()
+        await interaction.response.send_modal(modal)
+        await modal.wait()
+        self.view.guess = modal.guess
+
+class PokemonGuess(View):
+    def __init__(self, pokemon):
+        self.guess = None
+        super().__init__()
+        self.add_item(StartGuessPokemon("Guess", ButtonStyle.blurple, pokemon))
