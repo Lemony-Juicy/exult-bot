@@ -41,7 +41,7 @@ class ExultTest(commands.Bot):
         connection = self.db.get_connection()
         self.pool = connection.pool
         
-    async def setup(self):
+    async def setup_hook(self):
         exts = [f"cogs.{file[:-3]}" for file in os.listdir("cogs") if file.endswith(".py") and not file.startswith("_")]
         exts.insert(0, "jishaku")
         for ext in exts: self.load_extension(ext)
@@ -83,7 +83,6 @@ bot = ExultTest()
 
 async def run_bot():
     try:
-        await bot.setup()
         bot.pool = await asyncpg.create_pool(os.environ["PSQL_URI"])
         bot.logger.info(f"Database Pool Created. ({round(await bot.get_latency()*1000, 2)}ms)")
         bot.session = aiohttp.ClientSession()
@@ -94,17 +93,19 @@ async def run_bot():
         bot.logger.critical("Could not connect to psql.")
         
 async def close_bot():
+    await bot.wf.close()
+    bot.logger.info("Closed Waifu Client")
     await bot.pool.close()
     bot.logger.info("Closed psql connection.")
-    await bot.close()
-    bot.logger.info("logged out of bot")
-    await bot.http.close()
-    bot.logger.info("HTTP Session closed")
     for task in asyncio.all_tasks(loop=bot.loop):
         task.cancel()
         bot.logger.info("Cancelled running task")
     await bot.session.close()
     bot.logger.info("Bot AIOHTTP client session closed")
+    await bot.http.close()
+    bot.logger.info("HTTP Session closed")
+    await bot.close()
+    bot.logger.info("logged out of bot")
     
 try:
     bot.loop.run_until_complete(run_bot())
