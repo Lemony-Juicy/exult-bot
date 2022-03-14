@@ -1,6 +1,12 @@
 import discord
 from discord import app_commands, Interaction
 
+import time
+from psutil import Process, cpu_percent
+from os import getpid
+from random import randint
+import asyncio
+
 from utils import *
 from database import *
 
@@ -121,8 +127,9 @@ async def serverinfo_slash(interaction: Interaction):
     await interaction.response.send_message(embed=embed)
 
 @app_commands.command(name="userinfo", description="Display info on a given member.")
-@app_commands.command(member="The member you want to display info for.")
+@app_commands.describe(member="The member you want to display info for.")
 async def userinfo_slash(interaction: Interaction, member: discord.Member):
+    member = interaction.guild.get_member(member.id)
     if str(member.status) == "dnd":
         status = "🔴 DND"
     elif str(member.status) == "online":
@@ -134,28 +141,118 @@ async def userinfo_slash(interaction: Interaction, member: discord.Member):
     elif str(member.status) == "streaming":
         status = "🟣 Streaming"
         
-    badges_str = "" if not member.public_flags.hypesquad_balance() else "<:Balance:951943457193214014>  "
-    badges_str += "" if not member.public_flags.hypesquad_bravery() else "<:Bravery:951943457738477608>  "
-    badges_str += "" if not member.public_flags.hypesquad_brilliance() else "<:Brilliance:951943457214169160>  "
-    badges_str += "" if not member.public_flags.hypesquad() else "<:Hypesquad:951943457700720660>  "
-    badges_str += "" if not member.public_flags.early_supporter() else "<:EarlySupporter:951943457621028864>  "
-    badges_str += "" if not member.public_flags.bug_hunter() else "<:BugHunter:951943457511964792>  "
-    badges_str += "" if not member.public_flags.bug_hunter_level_2() else "<:BugHunter2:951943457629405264>  "
-    badges_str += "" if not member.public_flags.partner() else "<:DiscordPartner:951943457495207986>  "
-    badges_str += "" if not member.public_flags.staff() else "<:DiscordStaff:951943457721700402>  "
-    badges_str += "" if not member.public_flags.early_verified_bot_developer() else "<:EarlyVerifiedBotDev:951943458174689391>  "
-    badges_str += "" if not member.public_flags.discord_certified_moderator() else "<:DiscordCertifiedModerator:951945202963198062>  "
-    badges_str += "" if not member.public_flags.verified_bot() else "<:VerifiedBot:951943457788813363>  "
+    badges = "" if not member.public_flags.hypesquad_balance else "<:Balance:951943457193214014>  "
+    badges += "" if not member.public_flags.hypesquad_bravery else "<:Bravery:951943457738477608>  "
+    badges += "" if not member.public_flags.hypesquad_brilliance else "<:Brilliance:951943457214169160>  "
+    badges += "" if not member.public_flags.hypesquad else "<:Hypesquad:951943457700720660>  "
+    badges += "" if not member.public_flags.early_supporter else "<:EarlySupporter:951943457621028864>  "
+    badges += "" if not member.public_flags.bug_hunter else "<:BugHunter:951943457511964792>  "
+    badges += "" if not member.public_flags.bug_hunter_level_2 else "<:BugHunter2:951943457629405264>  "
+    badges += "" if not member.public_flags.partner else "<:DiscordPartner:951943457495207986>  "
+    badges += "" if not member.public_flags.staff else "<:DiscordStaff:951943457721700402>  "
+    badges += "" if not member.public_flags.early_verified_bot_developer else "<:EarlyVerifiedBotDev:951943458174689391>  "
+    badges += "" if not member.public_flags.discord_certified_moderator else "<:DiscordCertifiedModerator:951945202963198062>  "
+    badges += "" if not member.public_flags.verified_bot else "<:VerifiedBot:951943457788813363>  "
     
-    roles = ""
-    if len(member.roles) > 1:
-        for role in member.roles[1:].reverse():
-            roles += f"{role.mention}, "
-    roles = "Member has no roles" if roles == "" else roles
+    if len(member.roles[1:]) > 0:
+        roles = []
+        for role in member.roles[1:]:
+            roles.append(role.mention) 
+        roles = ", ".join(reversed(roles))
+    roles = "Member has no roles" if len(roles) == 0 else roles
     
+    position = "Couldn't retrieve member position" if not member.joined_at else sum(m.joined_at < member.joined_at for m in interaction.guild.members if m.joined_at) + 1
+    if position%10 == 1:
+        indicator = "st"
+    elif position%10 == 2:
+        indicator = "nd"
+    elif position%10 == 3:
+        indicator = "rd"
+    else:
+        indicator = "th"
+    
+    if member.activity:
+        if type(member.activity) == discord.Spotify:
+            activity = f"Listening to [{member.activity.title} - {member.activity.artist}]({member.activity.track_url})"
+        elif str(member.activity.type) == "ActivityType.custom":
+            activity = str(member.activity)
+        elif str(member.activity.type) == "ActivityType.unknown":
+            pass
+        else:
+            activity_type_list = str(member.activity.type).split(".")
+            activity = f"{activity_type_list[1].capitalize()} {member.activity.name}"
+    else:
+        activity = ""
+    banner = await interaction.client.fetch_user(member.id)
+    banner = banner.banner
+    embed = embed_builder(description=f"{activity}\n{badges}", 
+                          thumbnail=member.display_avatar.url, 
+                          author=[member.display_avatar.url, f"User Info: {member}"],
+                          footer=f"{position}{indicator} member to join",
+                          image=None if not banner else banner.url,
+                          fields=[
+                              ["Account Created:", Time.parsedate(member.created_at), True],
+                              [f"Joined {interaction.guild.name}:", Time.parsedate(member.joined_at), True],
+                              ["Boosting Since:", "Not Boosting" if not member.premium_since else Time.parsedate(member.premium_since), True],
+                              ["Nickname:", member.display_name, True], ["Discriminator:", member.discriminator, True],
+                              ["User Type:", "Bot" if member.bot else "User", True],
+                              ["Status:", status, True], ["Colour:", member.colour, True],
+                              ["Highest Role:", "No Roles" if len(member.roles) == 1 else member.top_role.mention, True],
+                              ["Number of Roles:", str(len(member.roles)-1), True],
+                              ["Roles:", roles, False]
+                          ])
+    await interaction.response.send_message(embed=embed)
+    
+@app_commands.command(name="info", description="Display information about the bot")
+async def info_slash(interaction: Interaction):
+    discord_url = "https://discord.com/users/"
+    
+    msg = f"**Bot Runtime:** {Time.minimalise_seconds(round(time.time() - interaction.client.startTime))}\n" \
+          f"**Bot Latency:** `{round(interaction.client.latency*1000)}ms`\n" \
+          f"**Database Latency:** `{round(await interaction.client.get_latency()*1000, 2)}ms`\n" \
+          f"**Guild Count:** `{len(interaction.client.guilds)}`\n" \
+          f"**Memory Used:** `{round(Process(getpid()).memory_info().rss/1204/1204/1204, 3)}GB Used ({round(Process(getpid()).memory_percent())}%)`\n" \
+          f"**CPU Usage:** `{cpu_percent()}%`\n" \
+          f"**Lead Dev & Owner:** [{interaction.client.get_user(839248459704959058)}]({discord_url}839248459704959058)\n" \
+          f"**Developers:** [{interaction.client.get_user(689564113415962717)}]({discord_url}689564113415962717), [{interaction.client.get_user(384023748531060737)}]({discord_url}384023748531060737)"
+    await interaction.response.send_message(embed=embed_builder(author=[interaction.client.user.display_avatar.url, f"Exult Bot: Information"],
+                                                                description=msg,
+                                                                thumbnail=interaction.client.user.display_avatar.url))
+    
+@app_commands.command(name="invite", description="Invite links for the Bot, and the Bot Support Server")
+async def invite_slash(interaction: Interaction):
+    embed = embed_builder(title="Click here to invite me!", 
+                          description="[Click here to join the support server!](https://exult.games/discord)",
+                          url="https://bot.exult.games/invite")
+    await interaction.response.send_message(embed=embed)
+    
+@app_commands.command(name="feedback", description="Give feedback directly to the Exult Bot Developers!")
+async def feedback_slash(interaction: Interaction, feedback: str):
+    channel = interaction.client.get_channel(914193452428836884)
+    embed = embed_builder(author=[interaction.user.display_avatar.url, f"Feedback from {interaction.user}"],
+                          footer=f"User ID: {interaction.user.id}",
+                          fields=[
+                              ["Mention:", interaction.user.mention, True],
+                              ["Guild:", interaction.guild, True],
+                              ["Suggested At:", Time.parsedate(), True],
+                              ["Feedback:", feedback, False]
+                          ])
+    devs = interaction.client.get_guild(912148314223415316).get_role(914159464406470656)
+    await channel.send(content=devs.mention, embed=embed)
+    embed = embed_builder(author=[interaction.client.user.display_avatar.url, f"Thanks for your feedback!"],
+                          description="Your feedback has been forwarded directly to our developers!",
+                          fields=[["Feedback:", feedback, True]])
+    await interaction.response.send_message(embed=embed)
+    
+@app_commands.command(name="rng", description="Randomly generate a number between 1 and a number of your choice!")
+@app_commands.describe(max_num="Max number you'd like the random number to be generated between")
+async def rng_slash(interaction: Interaction, max_num: app_commands.Range[int, 2, 1000]):
+    num = randint(1, max_num)
+    embed = embed_builder(author=f"Your random number is {num}!")
+    await interaction.response.send_message(embed=embed)
     
 def setup(bot):
-    commands = [avatar_slash, Role(), serverinfo_slash, ]
+    commands = [avatar_slash, Role(), serverinfo_slash, userinfo_slash, info_slash, invite_slash, feedback_slash, rng_slash]
     guilds = [912148314223415316, 949429956843290724]
     for command in commands:
         for guild in guilds:
