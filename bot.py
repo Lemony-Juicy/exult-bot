@@ -1,6 +1,6 @@
-import discord
-from discord import app_commands
-from discord.ext import commands
+from discord import Activity, ActivityType, Intents, Permissions, Object
+from discord.ext.commands import Bot
+from discord.utils import oauth_url
 #Discord Related Imports
 
 from dotenv import load_dotenv
@@ -11,41 +11,43 @@ import asyncpg
 import aiohttp
 from waifuim import WaifuAioClient
 import asyncio
-from typing import Literal, List
 #Regular Imports
 
 from database import *
 #Local Imports
 
-load_dotenv()
-os.environ["JISHAKU_NO_UNDERSCORE"] = "True"
-os.environ["JISHAKU_NO_DM_TRACEBACK"] = "True"
-os.environ["JISHAKU_HIDE"] = "True"
+load_dotenv("utils/")
 TOKEN = os.environ["TEST_TOKEN"]
 
-class ExultTest(commands.Bot):
+class ExultTest(Bot):
     def __init__(self):
         self.startTime = time()
-        self.__version__ = "0.2"
+        self.synced = False
+        self.persistent_views_added = False
         self.db = Database()
         self.logger = logging.getLogger(__name__)
-        self.owner_id = [839248459704959058]
+        self.owner_id = 839248459704959058
         super().__init__(
-            activity=discord.Activity(type=discord.ActivityType.watching, name="Exult Rewrite"),
+            activity=Activity(type=ActivityType.watching, name="Exult Rewrite"),
             command_prefix="t!",
             description="An all-in-one bot to fit all your needs. Moderation, Fun, Utility and More!",
-            intents=discord.Intents.all()
+            intents=Intents.all()
         )
         
-    async def _init(self):
-        connection = self.db.get_connection()
-        self.pool = connection.pool
-        
     async def setup_hook(self):
-        exts = [f"cogs.{file[:-3]}" for file in os.listdir("cogs") if file.endswith(".py") and not file.startswith("_")]
-        exts.insert(0, "jishaku")
-        for ext in exts: self.load_extension(ext)
+        exts = [f"cogs.{file[:-3]}" for file in os.listdir("cogs") if file.endswith(".py") and not file.startswith("_") and not file.startswith("test")]
+        for ext in exts: await self.load_extension(ext)
         
+    async def close(self):
+        await super().close()
+        await self.wf.close()
+        self.logger.info("Closed Waifu Client")
+        await self.pool.close()
+        self.logger.info("Closed psql connection.")
+        await self.session.close()
+        self.logger.info("Bot AIOHTTP client session closed")
+        await self.http.close()
+        self.logger.info("HTTP Session closed")
         
     async def get_latency(self):
         _ = []
@@ -56,60 +58,34 @@ class ExultTest(commands.Bot):
             _.append(y-x)
         return (_[0] + _[1] + _[2]) / 3
     
-    async def emoji(self):
-        emoji = self.get_emoji(936464383343738910)
-        return emoji
-    
-    arrow = "<a:arrow:882812954314154045>"
     red = 0xfb5f5f
     green = 0x2ecc71
     gold = 0xf1c40f
-    invis = '\u200b'
-    invite = "https://discord.com/api/oauth2/authorize?client_id=889185777555210281&permissions=3757567166&scope=bot%20applications.commands"
-    persistent_views_added = False
+    invite = oauth_url(889185777555210281, permissions=Permissions(3757567166))
     
     async def on_ready(self):
-        for guild in [912148314223415316, 949429956843290724]:
-            await self.tree.sync(guild=discord.Object(id=guild))
-        print(f"Loaded {len(self.cogs)} cogs, with {len(self.all_commands)} commands.")
+        if not self.synced:
+            for guild in [912148314223415316, 949429956843290724]:
+                await self.tree.sync(guild=Object(id=guild))
+            total_synced = await self.tree.fetch_commands(guild=Object(912148314223415316))
+            self.synced = True
         if not self.persistent_views_added:
-            #print("Persistent views added")
             self.persistent_views_added = True
-            print(f"Successfully logged in to {self.user}. ({round(self.latency*1000)}ms)")
-            print(f"Startup time: {round(time() - self.startTime)}s")
+        msg = f"Application Commands Synced: {len(total_synced) if self.synced else 'No'}\n" \
+              f"Persistent Views Added: {'Yes' if self.persistent_views_added else 'No'}\n" \
+              f"Successfully logged in to {self.user}. ({round(self.latency*1000)}ms)\n" \
+              f"Startup time: {round(time() - self.startTime)}s"
+        print(msg)
             
 bot = ExultTest()
-#bot.remove_command("help")
+bot.remove_command("help")
 
-async def run_bot():
-    try:
-        bot.pool = await asyncpg.create_pool(os.environ["PSQL_URI"])
-        bot.logger.info(f"Database Pool Created. ({round(await bot.get_latency()*1000, 2)}ms)")
-        bot.session = aiohttp.ClientSession()
-        bot.logger.info("Aiohttp Session Created Successfully")
-        bot.wf = WaifuAioClient(session=bot.session, appname="Exult")
-        bot.logger.info("Waifu Client Started")
-    except (ConnectionError, asyncpg.exceptions.CannotConnectNowError):
-        bot.logger.critical("Could not connect to psql.")
+async def main():
+    async with aiohttp.ClientSession() as session:
+        async with bot:
+            bot.session = session
+            bot.pool = await asyncpg.create_pool(os.environ["PSQL_URI"])
+            bot.wf = WaifuAioClient(session=session, appname="Exult")
+            await bot.start(os.environ["TEST_TOKEN"])
         
-async def close_bot():
-    await bot.wf.close()
-    bot.logger.info("Closed Waifu Client")
-    await bot.pool.close()
-    bot.logger.info("Closed psql connection.")
-    for task in asyncio.all_tasks(loop=bot.loop):
-        task.cancel()
-        bot.logger.info("Cancelled running task")
-    await bot.session.close()
-    bot.logger.info("Bot AIOHTTP client session closed")
-    await bot.http.close()
-    bot.logger.info("HTTP Session closed")
-    await bot.close()
-    bot.logger.info("logged out of bot")
-    
-try:
-    bot.loop.run_until_complete(run_bot())
-except KeyboardInterrupt:
-    bot.loop.run_until_complete(close_bot())
-        
-bot.run(os.environ["TEST_TOKEN"])
+asyncio.run(main())

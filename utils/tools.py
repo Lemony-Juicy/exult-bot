@@ -1,4 +1,5 @@
-import discord
+from discord import Embed
+from discord.utils import utcnow
 from typing import Union
 import re
 import datetime
@@ -15,7 +16,7 @@ class hextype:
 def embed_builder(*, title:Union[str, None]=None, description:Union[str, None]=None, colour:hextype=0xfb5f5f, 
                   timestamp:Union[bool, None]=None, author:Union[list, str, None]=None, footer:Union[list, str, None]=None,
                   thumbnail:Union[str, None]=None, image:Union[str, None]=None, fields:Union[list, None]=None, url:str=None):
-    embed = discord.Embed()
+    embed = Embed()
     if title: embed.title = title
     if description: embed.description = description
     if timestamp: embed.timestamp = timestamp
@@ -62,12 +63,12 @@ class Time:
             dtype = dtype[:-1]
         return [num, dtype]
 
-    def parsedate(date=discord.utils.utcnow()):
+    def parsedate(date=utcnow()):
         timestamp = datetime.datetime.timestamp(date)
         timestamp = str(timestamp).split('.', 1)[0]
         return f"<t:{timestamp}:R>"
 
-    def formatdate(date=discord.utils.utcnow()):
+    def formatdate(date=utcnow()):
         return date.strftime("%d/%m/%Y %H:%M")
 
     def convert_for_command(time: Union[datetime.datetime, list]):

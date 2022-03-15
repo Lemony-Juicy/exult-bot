@@ -1,5 +1,4 @@
-import discord
-from discord import app_commands, Interaction
+from discord import app_commands, Interaction, User, Member, Guild, errors, Embed, TextChannel, Object
 
 import datetime
 
@@ -7,9 +6,9 @@ from utils import *
 from database import *
     
 class ModLogging:
-    def __init__(self, *, action:str=None, interaction:Interaction=None, member:discord.User=None, reason:str=None, expiration_date:str=None):
+    def __init__(self, *, action:str=None, interaction:Interaction=None, member:User=None, reason:str=None, expiration_date:str=None):
         self.action = action
-        self.db = CasesDB(Database())
+        self.db = CasesDB(interaction.client)
         self.interaction = interaction
         self.member = member
         self.reason = reason
@@ -29,7 +28,7 @@ class ModLogging:
             return [logembed, 934482344155435028]
         return logembed
     
-    async def get_cases_by_moderator(self, moderator: discord.User):
+    async def get_cases_by_moderator(self, moderator: User):
         CASES = await self.db.get_cases_by_moderator(moderator.id)
         if len(CASES) == 0:
             embed = embed_builder(description=f"{moderator.mention} has no mod stats to display!")
@@ -55,7 +54,7 @@ class ModLogging:
             else:
                 return await self.interaction.response.send_message(embed=embeds[0])
         
-    async def get_cases_for_member(self, guild: discord.Guild, member: discord.User, case_type=None):
+    async def get_cases_for_member(self, guild: Guild, member: User, case_type=None):
         CASES = await self.db.get_cases_for_member(guild.id, member.id, case_type)
         if len(CASES) == 0:
             embed = embed_builder(description=f"{member.mention} has no cases to display!")
@@ -89,7 +88,7 @@ class ModLogging:
         return embed_builder(author=[self.interaction.guild.icon.url, f"Cleared all cases for {self.interaction.guild.name}"], 
                              fields=[["Total Cases:", f"{TOTAL}", True]])
         
-    async def clear_cases_for_member(self, member: discord.Member):
+    async def clear_cases_for_member(self, member: Member):
         TOTAL = await self.db.delete_cases_for_member(self.interaction.guild.id, member.id)
         if TOTAL == 0:
             return embed_builder(author=[member.display_avatar.url, f"No cases to clear for {member}"],
@@ -171,7 +170,7 @@ async def noperms(interaction: Interaction):
 
 @app_commands.command(name="ban", description="Ban a member from the server.")
 @app_commands.describe(member="A member you want to ban.", reason="The reason for the ban")
-async def ban_slash(interaction: Interaction, member: discord.Member, reason:str=None):
+async def ban_slash(interaction: Interaction, member: Member, reason:str=None):
     if interaction.user.guild_permissions.ban_members:
         pass
     else:
@@ -181,21 +180,21 @@ async def ban_slash(interaction: Interaction, member: discord.Member, reason:str
                         description=f"**Reason:** {reason}\n**Banned at:** {Time.parsedate()}",
                         thumbnail=interaction.guild.icon.url)
     try: await member.send(embed=embed)
-    except discord.errors.HTTPException: pass
+    except errors.HTTPException: pass
     
     if interaction.guild.id not in [912148314223415316, 949429956843290724]:
         await interaction.guild.ban(member, reason=reason)
 
     log = await ModLogging(action="ban", interaction=interaction, member=member, reason=reason, expiration_date=None).handle_case(True)
 
-    await interaction.response.send_message(embed=log if isinstance(log, discord.Embed) else log[0])
+    await interaction.response.send_message(embed=log if isinstance(log, Embed) else log[0])
 
     if isinstance(log, list):
         await interaction.client.get_channel(log[1]).send(embed=log[0].add_field(name=f"Banned at:", value=f"{Time.parsedate()}", inline=False))
         
 @app_commands.command(name="kick", description="Kick a member from the server.")
 @app_commands.describe(member="A member you want to kick.", reason="The reason for the ban")
-async def kick_slash(interaction: Interaction, member: discord.Member, reason: str=None):
+async def kick_slash(interaction: Interaction, member: Member, reason: str=None):
     if interaction.user.guild_permissions.kick_members:
         pass
     else:
@@ -205,21 +204,21 @@ async def kick_slash(interaction: Interaction, member: discord.Member, reason: s
                         description=f"**Reason:** {reason}\n**Kicked at:** {Time.parsedate()}",
                         thumbnail=interaction.guild.icon.url)
     try: await member.send(embed=embed)
-    except discord.errors.HTTPException: pass
+    except errors.HTTPException: pass
     
     if interaction.guild.id not in [912148314223415316, 949429956843290724]:
         await interaction.guild.kick(member, reason=reason)
 
     log = await ModLogging(action="kick", interaction=interaction, member=member, reason=reason, expiration_date=None).handle_case(True)
 
-    await interaction.response.send_message(embed=log if isinstance(log, discord.Embed) else log[0])
+    await interaction.response.send_message(embed=log if isinstance(log, Embed) else log[0])
 
     if isinstance(log, list):
         await interaction.client.get_channel(log[1]).send(embed=log[0].add_field(name=f"Kicked at:", value=f"{Time.parsedate()}", inline=False))
         
 @app_commands.command(name="unban", description="Unban a member from the server.")
 @app_commands.describe(member="A member you want to unban.", reason="The reason for the unban")
-async def unban_slash(interaction: Interaction, member: discord.User, reason: str=None):
+async def unban_slash(interaction: Interaction, member: User, reason: str=None):
     if interaction.user.guild_permissions.ban_members:
         pass
     else:
@@ -229,14 +228,14 @@ async def unban_slash(interaction: Interaction, member: discord.User, reason: st
                         description=f"**Reason:** {reason}\n**Unbanned at:** {Time.parsedate()}",
                         thumbnail=interaction.guild.icon.url)
     try: await member.send(embed=embed)
-    except discord.errors.HTTPException: pass
+    except errors.HTTPException: pass
     
     if interaction.guild.id not in [912148314223415316, 949429956843290724]:
         await interaction.guild.unban(member, reason=reason)
 
     log = await ModLogging(action="unban", interaction=interaction, member=member, reason=reason, expiration_date=None).handle_case(True)
 
-    await interaction.response.send_message(embed=log if isinstance(log, discord.Embed) else log[0])
+    await interaction.response.send_message(embed=log if isinstance(log, Embed) else log[0])
 
     if isinstance(log, list):
         await interaction.client.get_channel(log[1]).send(embed=log[0].add_field(name=f"Unbanned at:", value=f"{Time.parsedate()}", inline=False))
@@ -254,7 +253,7 @@ class Purge(app_commands.Group):
         await interaction.response.send_message(embed=embed)
         
     @app_commands.command(name="member", description="Purge messages from a specific member in the current channel")
-    async def purge_member(self, interaction: Interaction, member: discord.User, messages: app_commands.Range[int, 1, 100]):
+    async def purge_member(self, interaction: Interaction, member: User, messages: app_commands.Range[int, 1, 100]):
         if interaction.user.guild_permissions.manage_messages:
             pass
         else:
@@ -298,7 +297,7 @@ class Purge(app_commands.Group):
 class Slowmode(app_commands.Group):
     
     @app_commands.command(name="on", description="Turn on slowmode for a channel")
-    async def slowmode_on(self, interaction: Interaction, number: int, unit: str, channel: discord.TextChannel=None):
+    async def slowmode_on(self, interaction: Interaction, number: int, unit: str, channel: TextChannel=None):
         if interaction.user.guild_permissions.manage_channels:
             pass
         else:
@@ -318,7 +317,7 @@ class Slowmode(app_commands.Group):
         return [app_commands.Choice(name=unit, value=unit) for unit in units if current.lower() in unit.lower()]
         
     @app_commands.command(name="off", description="Turn off slowmode for a channel")
-    async def slowmode_off(self, interaction: Interaction, channel: discord.TextChannel=None):
+    async def slowmode_off(self, interaction: Interaction, channel: TextChannel=None):
         if interaction.user.guild_permissions.manage_channels:
             pass
         else:
@@ -345,7 +344,7 @@ class Cases(app_commands.Group):
     clear = app_commands.Group(name="clear", description="Clear all cases for the server or a member")
     
     @app_commands.command(name="display", description="Display all cases for a given member")
-    async def cases_display_slash(self, interaction: Interaction, member: discord.Member=None):
+    async def cases_display_slash(self, interaction: Interaction, member: Member=None):
         if interaction.user.guild_permissions.manage_messages:
             pass
         else:
@@ -363,7 +362,7 @@ class Cases(app_commands.Group):
         await interaction.response.send_message(embed=embed)
     
     @clear.command(name="member", description="Clear all cases for a specific member")
-    async def clear_cases_member_slash(self, interaction: Interaction, member: discord.Member):
+    async def clear_cases_member_slash(self, interaction: Interaction, member: Member):
         if interaction.user.guild_permissions.manage_messages:
             pass
         else:
@@ -401,7 +400,7 @@ class Case(app_commands.Group):
         await interaction.response.send_message(embed=embed)
         
 @app_commands.command(name="warn", description="Warn a member")
-async def warn_slash(interaction: Interaction, member: discord.Member, reason: str):
+async def warn_slash(interaction: Interaction, member: Member, reason: str):
     if interaction.user.guild_permissions.manage_messages:
         pass
     else:
@@ -415,24 +414,23 @@ async def warn_slash(interaction: Interaction, member: discord.Member, reason: s
     
     log = await ModLogging(action="Warn", interaction=interaction, member=member, reason=reason).handle_case(True)
     
-    await interaction.response.send_message(embed=log if isinstance(log, discord.Embed) else log[0])
+    await interaction.response.send_message(embed=log if isinstance(log, Embed) else log[0])
     
     if isinstance(log, list):
         await interaction.client.get_channel(log[1]).send(embed=log[0].add_field(name=f"Warned at:", value=Time.parsedate(), inline=False))
         
 @app_commands.command(name="warns", description="Display warnings given to a specified member")
-async def warns_slash(interaction: Interaction, member: discord.Member):
+async def warns_slash(interaction: Interaction, member: Member):
     if interaction.user.guild_permissions.manage_messages:
         pass
     else:
         return await noperms(interaction)
     await ModLogging(interaction=interaction).get_cases_for_member(interaction.guild, member, "Warn")
         
-def setup(bot: discord.Client):
+async def setup(bot):
     commands = [ban_slash, kick_slash, unban_slash, Purge(), Slowmode(), modstats_slash, Cases(), Case(), warn_slash,
                 warns_slash]
     guilds = [912148314223415316, 949429956843290724]
     for command in commands:
-        for guild in guilds:
-            bot.tree.add_command(command, guild=discord.Object(guild))
-        print(f"Added {command.name} to both guilds")
+        bot.tree.add_command(command, guilds=[Object(guild) for guild in guilds])
+        print(f"Added {command.name} to {guilds}")

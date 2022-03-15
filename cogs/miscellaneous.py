@@ -1,18 +1,16 @@
-import discord
-from discord import app_commands, Interaction
+from discord import app_commands, Interaction, Member, Role, Spotify, Object
 
 import time
 from psutil import Process, cpu_percent
 from os import getpid
 from random import randint
-import asyncio
 
 from utils import *
 from database import *
 
 @app_commands.command(name="avatar", description="Get a user's avatar and banner")
 @app_commands.describe(member="A member whose avatar/banner you want to view.")
-async def avatar_slash(interaction: Interaction, member:discord.Member=None):
+async def avatar_slash(interaction: Interaction, member:Member=None):
     member = interaction.user if not member else member
     embed = embed_builder(author=[member.display_avatar.url, f"{member.name}'s Avatar"],
                           image=member.display_avatar.url)
@@ -26,7 +24,7 @@ class Role(app_commands.Group):
     
     @app_commands.command(name="info", description="Display info on a given role")
     @app_commands.describe(role="The role you want to display info on")
-    async def role_info_slash(self, interaction: Interaction, role:discord.Role):
+    async def role_info_slash(self, interaction: Interaction, role:Role):
             Permissions = []
             if role.permissions.administrator:
                 Permissions.append("Administrator")
@@ -86,7 +84,7 @@ class Role(app_commands.Group):
             
     @app_commands.command(name="members", description="Display all members with a given role.")
     @app_commands.describe(role="The role you want to view members for.")
-    async def role_members_slash(self, interaction: Interaction, role: discord.Role):
+    async def role_members_slash(self, interaction: Interaction, role: Role):
         formatted_members = get_chunks(20, sorted([str(member) for member in role.members]))
         embeds = []
         for members in formatted_members:
@@ -128,7 +126,7 @@ async def serverinfo_slash(interaction: Interaction):
 
 @app_commands.command(name="userinfo", description="Display info on a given member.")
 @app_commands.describe(member="The member you want to display info for.")
-async def userinfo_slash(interaction: Interaction, member: discord.Member):
+async def userinfo_slash(interaction: Interaction, member: Member):
     member = interaction.guild.get_member(member.id)
     if str(member.status) == "dnd":
         status = "🔴 DND"
@@ -172,7 +170,7 @@ async def userinfo_slash(interaction: Interaction, member: discord.Member):
         indicator = "th"
     
     if member.activity:
-        if type(member.activity) == discord.Spotify:
+        if type(member.activity) == Spotify:
             activity = f"Listening to [{member.activity.title} - {member.activity.artist}]({member.activity.track_url})"
         elif str(member.activity.type) == "ActivityType.custom":
             activity = str(member.activity)
@@ -205,7 +203,7 @@ async def userinfo_slash(interaction: Interaction, member: discord.Member):
     
 @app_commands.command(name="info", description="Display information about the bot")
 async def info_slash(interaction: Interaction):
-    discord_url = "https://discord.com/users/"
+    discord_url = "https://com/users/"
     
     msg = f"**Bot Runtime:** {Time.minimalise_seconds(round(time.time() - interaction.client.startTime))}\n" \
           f"**Bot Latency:** `{round(interaction.client.latency*1000)}ms`\n" \
@@ -223,7 +221,7 @@ async def info_slash(interaction: Interaction):
 async def invite_slash(interaction: Interaction):
     embed = embed_builder(title="Click here to invite me!", 
                           description="[Click here to join the support server!](https://exult.games/discord)",
-                          url="https://bot.exult.games/invite")
+                          url=interaction.client.invite)
     await interaction.response.send_message(embed=embed)
     
 @app_commands.command(name="feedback", description="Give feedback directly to the Exult Bot Developers!")
@@ -251,11 +249,10 @@ async def rng_slash(interaction: Interaction, max_num: app_commands.Range[int, 2
     embed = embed_builder(author=f"Your random number is {num}!")
     await interaction.response.send_message(embed=embed)
     
-def setup(bot):
+async def setup(bot):
     commands = [avatar_slash, Role(), serverinfo_slash, userinfo_slash, info_slash, invite_slash, feedback_slash, rng_slash]
     guilds = [912148314223415316, 949429956843290724]
     for command in commands:
-        for guild in guilds:
-            bot.tree.add_command(command, guild=discord.Object(guild))
-        print(f"Added {command.name} to both guilds")
+        bot.tree.add_command(command, guilds=[Object(guild) for guild in guilds])
+        print(f"Added {command.name} to {guilds}")
         

@@ -1,6 +1,4 @@
-import discord
-from discord import app_commands, Interaction
-from discord.ext.commands import Bot
+from discord import app_commands, Interaction, Object
 
 import os
 import requests as r
@@ -37,3 +35,10 @@ async def wtp_slash(interaction: Interaction):
         embed.set_field_at(0, name="Guesses Remaining:", value=f"{lives}")
         view = PokemonGuess(answer)
         await msg.edit(embed=embed, view=view)
+        
+async def setup(bot):
+    commands = [wtp_slash]
+    guilds = [912148314223415316, 949429956843290724]
+    for command in commands:
+        bot.tree.add_command(command, guilds=[Object(guild) for guild in guilds])
+        print(f"Added {command.name} to {guilds}")

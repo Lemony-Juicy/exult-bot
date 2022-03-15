@@ -1,6 +1,5 @@
 from discord import ButtonStyle, Interaction
 from discord.ui import View, Button, Modal, TextInput
-from numpy import place
 
 from utils.tools import embed_builder
 

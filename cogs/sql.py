@@ -1,5 +1,4 @@
-import discord
-from discord import app_commands, Interaction
+from discord import app_commands, Interaction, File, Object
 
 import time
 import traceback
@@ -108,7 +107,7 @@ async def sql_slash(interaction: Interaction, query: str):
         fmt = f'```\n{render}\n```\n*Returned {Plural(rows):row} in {dt:.2f}ms*'
         if len(fmt) > 2000:
             fp = io.BytesIO(fmt.encode("utf-8"))
-            return await interaction.response.send_message("Too many results...", file=discord.File(fp, "results.txt"))
+            return await interaction.response.send_message("Too many results...", file=File(fp, "results.txt"))
         else:
             return await interaction.response.send_message(fmt)
     elif query == "all tables":
@@ -130,7 +129,7 @@ async def sql_slash(interaction: Interaction, query: str):
         fmt = f'```\n{render}\n```\n*Returned {Plural(rows):row} in {dt:.2f}ms*'
         if len(fmt) > 2000:
             fp = io.BytesIO(fmt.encode('utf-8'))
-            return await interaction.response.send_message('Too many results...', file=discord.File(fp, 'results.txt'))
+            return await interaction.response.send_message('Too many results...', file=File(fp, 'results.txt'))
         else:
             return await interaction.response.send_message(fmt)
             
@@ -139,9 +138,9 @@ async def sql_slash_query_autocomplete(interaction: Interaction, current: str, n
     options = ["all tables"]
     return [app_commands.Choice(name=option, value=option) for option in options if current.lower() in option.lower()]
 
-def setup(bot):
+async def setup(bot):
     commands = [sql_slash]
     guilds = [912148314223415316, 949429956843290724]
     for command in commands:
-        bot.tree.add_command(command, guilds=[discord.Object(guild) for guild in guilds])
+        bot.tree.add_command(command, guilds=[Object(guild) for guild in guilds])
         print(f"Added {command.name} to {guilds}")

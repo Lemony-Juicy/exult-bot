@@ -1,8 +1,5 @@
-import discord
-from discord import app_commands, Interaction
-from discord.ext.commands import Cog, Bot
+from discord import app_commands, Interaction, Object
 
-import time
 from typing import List
 
 from utils import *
@@ -110,9 +107,9 @@ class waifu(app_commands.Group):
                 else await Waifu.not_nsfw_channel(interaction)
         await interaction.response.send_message(embed=embed)
         
-def setup(bot:Bot):
+async def setup(bot):
     commands = [waifu()]
     guilds = [912148314223415316, 949429956843290724]
     for command in commands:
-        bot.tree.add_command(command, guilds=[discord.Object(guild) for guild in guilds])
+        bot.tree.add_command(command, guilds=[Object(guild) for guild in guilds])
         print(f"Added {command.name} to {guilds}")

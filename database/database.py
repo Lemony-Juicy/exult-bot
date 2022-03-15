@@ -2,7 +2,7 @@ from dotenv import load_dotenv
 import os
 import asyncpg
 
-load_dotenv("./.env")
+load_dotenv("./utils/.env")
 
 class Database:
     def __init__(self):
